@@ -39,7 +39,7 @@ export default function vino(config: Config): Plugin {
         builder.invalidate();
         this.environment.moduleGraph.urlToModuleMap.values().filter(m =>
           m.url == file ||
-          m.url == "vino:bundle"
+          m.url == "file:bundle"
         ).forEach(m => {
           this.environment.reloadModule(m);
           for (const entry of m.importers) {
@@ -56,8 +56,8 @@ export default function vino(config: Config): Plugin {
     },
 
     resolveId(id, importer) {
-      if (id === "vino:bundle") return id;
-      if (id === "vino:adapter") return id;
+      if (id === "file:bundle") return id;
+      if (id === "file:adapter") return id;
       if (id.endsWith('?client')) {
         id = path.resolve(importer ?? "", "..", id);
         refs.push(id.slice(0, -'?client'.length));
@@ -67,16 +67,16 @@ export default function vino(config: Config): Plugin {
     },
 
     async load(id) {
-      if (id === "vino:adapter") { return `export { default } from "${config.adapter}";` }
-      if (id === "vino:bundle") {
+      if (id === "file:adapter") { return `export { default } from "${config.adapter}";` }
+      if (id === "file:bundle") {
         const [assets, watchdog] = await builder.build(refs);
         watchers = watchdog;
         return `export default ${JSON.stringify(assets)};`
       }
       if (id.endsWith('?client')) {
         const absPath = id.slice(0, -'?client'.length);
-        if(!refs.includes(absPath)) throw new Error(`Vino: Entry point "${absPath}" not found. Make sure to import it in your code.`);
-        return `import { default as module } from "${absPath}"; import bundle from "vino:bundle"; export default { module, entrypoint: bundle.entrypoints[${refs.indexOf(absPath)}] };`;
+        if(!refs.includes(absPath)) throw new Error(`Entry point "${absPath}" not found. Make sure to import it in your code.`);
+        return `import { default as module } from "${absPath}"; import bundle from "file:bundle"; export default { module, entrypoint: bundle.entrypoints[${refs.indexOf(absPath)}] };`;
       }
       return null;
     }

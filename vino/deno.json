@@ -1,6 +1,7 @@
 {
   "name": "@ch99q/vino",
-  "version": "1.0.0",
+  "license": "MIT",
+  "version": "0.1.0",
   "exports": {
     "./client": "./types.d.ts",
     

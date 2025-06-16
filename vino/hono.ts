@@ -5,8 +5,8 @@ import { mimes } from "hono/utils/mime";
 
 import type { Component } from "@ch99q/vino/client";
 
-import bundle from "vino:bundle";
-import render from "vino:adapter";
+import bundle from "file:bundle";
+import render from "file:adapter";
 
 type Config = {
   base?: string;

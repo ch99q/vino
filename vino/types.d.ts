@@ -12,21 +12,16 @@ declare interface Bundle {
   assets: Record<string, string | Uint8Array>;
 }
 
-declare module "vino:assets" {
+declare module "file:assets" {
   const assets: Bundle['assets'];
   export default assets;
 }
 
-declare module "vino:bundle" {
+declare module "file:bundle" {
   export const assets: Bundle['assets'];
   export const entrypoints: Bundle['entrypoints'];
 }
 
-declare module "vino:adapter" {
+declare module "file:adapter" {
   export default function render(base: string, component: typeof Component, metadata?: Record<string, unknown>): string;
-}
-
-declare module "vino:*" {
-  const value: typeof Component;
-  export default value;
 }

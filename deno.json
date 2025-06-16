@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "bench": "cd bench && deno run -A mod.ts"
+    "bench": "cd bench && deno run -A mod.ts",
+    "publish": "cd vino && deno publish"
   },
   "workspace": [
     "./vino",
