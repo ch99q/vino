@@ -1,0 +1,21 @@
+{
+  "name": "@ch99q/vino/react",
+  "imports": {
+    "react": "npm:react@^19.1.0",
+    "react-dom": "npm:react-dom@^19.1.0"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "types": [
+      "npm:@types/react@^19.1.6",
+      "npm:@types/react-dom@^19.1.6",
+      "@ch99q/vino/client"
+    ]
+  }
+}

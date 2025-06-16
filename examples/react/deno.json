@@ -1,0 +1,31 @@
+{
+  "tasks": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "deno serve -A --parallel dist/mod.mjs"
+  },
+  "imports": {
+    "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.4",
+    "@hono/vite-dev-server": "npm:@hono/vite-dev-server@^0.19.1",
+    "@vitejs/plugin-react": "npm:@vitejs/plugin-react@^4.5.2",
+    "hono": "npm:hono@^4.7.11",
+    "react": "npm:react@^19.1.0",
+    "react-dom": "npm:react-dom@^19.1.0",
+    "vite": "npm:vite@^6.3.5"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "deno.window"
+    ],
+    "types": [
+      "npm:@types/react@^19.1.0",
+      "npm:@types/react-dom@^19.1.0",
+      "@ch99q/vino/client"
+    ]
+  }
+}

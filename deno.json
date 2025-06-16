@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "bench": "cd bench && deno run -A mod.ts"
+  },
+  "workspace": [
+    "./vino",
+    "./examples/react",
+    "./examples/preact"
+  ],
+  "nodeModulesDir": "auto"
+}

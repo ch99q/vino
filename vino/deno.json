@@ -1,0 +1,17 @@
+{
+  "name": "@ch99q/vino",
+  "version": "1.0.0",
+  "exports": {
+    "./client": "./types.d.ts",
+    
+    ".": "./mod.ts",
+    "./hono": "./hono.ts",
+
+    "./react": "./react/mod.tsx",
+    "./preact": "./preact/mod.tsx"
+  },
+  "imports": {
+    "hono": "npm:hono@4.7.11",
+    "vite": "npm:vite@^6.3.5"
+  }
+}

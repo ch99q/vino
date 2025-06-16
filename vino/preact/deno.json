@@ -1,0 +1,21 @@
+{
+  "name": "@ch99q/vino/preact",
+  "imports": {
+    "preact": "npm:preact@^10.26.9",
+    "preact/hooks": "npm:preact@^10.26.9/hooks",
+    "preact/compat": "npm:preact@^10.26.9/compat",
+    "preact-render-to-string": "npm:preact-render-to-string@^6.5.13"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "types": [
+      "@ch99q/vino/client"
+    ]
+  }
+}

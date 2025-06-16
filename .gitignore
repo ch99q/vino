@@ -1,0 +1,53 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# Deno
+deno.lock
+deno_dir/
+.deno/
+.deno_cache/
+.deno_installer/
+.deno_plugins/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+
+# Coverage
+coverage/
+*.lcov
+
+# Build output
+dist/
+build/
+out/
+tmp/
+temp/
+.cache/
+.vite/
+.next/
+.svelte-kit/
+.vercel/
+.netlify/
+
+# Misc
+*.tsbuildinfo
+.idea/
+.vscode/
+*.swp
+*.swo

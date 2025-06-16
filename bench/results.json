@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-06-16T14:22:59.889Z",
+  "results": [
+    {
+      "example": "react",
+      "requests_per_sec": 56671.95,
+      "transfer_per_sec": "50.59MB",
+      "latency": "32.65ms"
+    },
+    {
+      "example": "preact",
+      "requests_per_sec": 58308.04,
+      "transfer_per_sec": "32.86MB",
+      "latency": "31.34ms"
+    }
+  ]
+}
