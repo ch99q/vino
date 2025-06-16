@@ -1,5 +1,8 @@
 {
-  "name": "@ch99q/vino/react",
+  "name": "@ch99q/vino-react",
+  "version": "0.0.1",
+  "license": "MIT",
+  "exports": "./mod.tsx",
   "imports": {
     "react": "npm:react@^19.1.0",
     "react-dom": "npm:react-dom@^19.1.0"

@@ -1,4 +1,4 @@
-import { Scripts, Meta, Links } from "@ch99q/vino/preact";
+import { Scripts, Meta, Links } from "@ch99q/vino-preact";
 import { useState } from "preact/hooks";
 
 export default function App() {

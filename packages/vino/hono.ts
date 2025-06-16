@@ -3,10 +3,8 @@ import path from "node:path"
 import type { Context, MiddlewareHandler } from "hono";
 import { mimes } from "hono/utils/mime";
 
-import type { Component } from "@ch99q/vino/client";
-
-import bundle from "file:bundle";
-import render from "file:adapter";
+import bundle from "./virtual/bundle.ts"
+import render from "./virtual/adapter.ts";
 
 type Config = {
   base?: string;
@@ -28,7 +26,7 @@ export class Vino {
     await next();
   }
 
-  render: (context: Context, component: Component, metadata: Record<string, unknown>) => Response = (context, component, metadata = {}) => {
+  render: (context: Context, component: any, metadata: Record<string, unknown>) => Response = (context, component, metadata = {}) => {
     const body = render(this.config.base ?? "/", component, metadata);
     const link = component?.entrypoint?.styles?.map((route: string) => `<${path.join(this.config.base ?? "", route)}>; rel="preload"; as="style"; fetchpriority="high"`).join(", ");
     return context.html(body, 200, { "Link": link ?? "" });

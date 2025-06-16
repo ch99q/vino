@@ -1,10 +1,11 @@
 {
   "tasks": {
-    "bench": "cd bench && deno run -A mod.ts",
-    "publish": "cd vino && deno publish"
+    "bench": "cd bench && deno run -A mod.ts"
   },
   "workspace": [
-    "./vino",
+    "./packages/vino",
+    "./packages/vino-react",
+    "./packages/vino-preact",
     "./examples/react",
     "./examples/preact"
   ],

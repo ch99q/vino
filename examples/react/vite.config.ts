@@ -22,7 +22,7 @@ export default defineConfig({
     }),
     react(),
     vino({
-      adapter: import.meta.resolve("@ch99q/vino/react"),
+      adapter: import.meta.resolve("@ch99q/vino-react"),
     })
   ],
   build: {

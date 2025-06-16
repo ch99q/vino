@@ -1,18 +1,18 @@
+// deno-lint-ignore-file no-explicit-any
 import path from "node:path";
 import type { Plugin, ResolvedConfig } from "vite";
 
 import { type Builder, createBuilder } from "./mod.build.ts";
 
-declare global {
-  var __VINO_BUNDLE__: boolean;
-}
+const VIRTUAL_BUNDLE = new URL(import.meta.resolve("./virtual/bundle.ts")).pathname;
+const VIRTUAL_ADAPTER = new URL(import.meta.resolve("./virtual/adapter.ts")).pathname;
 
 interface Config {
   adapter: string;
 }
 
 export default function vino(config: Config): Plugin {
-  if (globalThis.__VINO_BUNDLE__) {
+  if ((globalThis as any).__VINO_BUNDLE__) {
     return {
       name: "vino:ignore",
       enforce: 'pre'
@@ -39,7 +39,7 @@ export default function vino(config: Config): Plugin {
         builder.invalidate();
         this.environment.moduleGraph.urlToModuleMap.values().filter(m =>
           m.url == file ||
-          m.url == "file:bundle"
+          m.url == VIRTUAL_BUNDLE
         ).forEach(m => {
           this.environment.reloadModule(m);
           for (const entry of m.importers) {
@@ -56,8 +56,8 @@ export default function vino(config: Config): Plugin {
     },
 
     resolveId(id, importer) {
-      if (id === "file:bundle") return id;
-      if (id === "file:adapter") return id;
+      if (id === VIRTUAL_ADAPTER) return id;
+      if (id === VIRTUAL_BUNDLE) return id;
       if (id.endsWith('?client')) {
         id = path.resolve(importer ?? "", "..", id);
         refs.push(id.slice(0, -'?client'.length));
@@ -67,16 +67,16 @@ export default function vino(config: Config): Plugin {
     },
 
     async load(id) {
-      if (id === "file:adapter") { return `export { default } from "${config.adapter}";` }
-      if (id === "file:bundle") {
+      if (id === VIRTUAL_ADAPTER) { return `export { default } from "${config.adapter}";` }
+      if (id === VIRTUAL_BUNDLE) {
         const [assets, watchdog] = await builder.build(refs);
         watchers = watchdog;
         return `export default ${JSON.stringify(assets)};`
       }
       if (id.endsWith('?client')) {
         const absPath = id.slice(0, -'?client'.length);
-        if(!refs.includes(absPath)) throw new Error(`Entry point "${absPath}" not found. Make sure to import it in your code.`);
-        return `import { default as module } from "${absPath}"; import bundle from "file:bundle"; export default { module, entrypoint: bundle.entrypoints[${refs.indexOf(absPath)}] };`;
+        if (!refs.includes(absPath)) throw new Error(`Entry point "${absPath}" not found. Make sure to import it in your code.`);
+        return `import { default as module } from "${absPath}"; import bundle from "${VIRTUAL_BUNDLE}"; export default { module, entrypoint: bundle.entrypoints[${refs.indexOf(absPath)}] };`;
       }
       return null;
     }

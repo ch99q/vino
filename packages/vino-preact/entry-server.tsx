@@ -1,6 +1,4 @@
 // deno-lint-ignore-file no-explicit-any
-import type { Component } from "@ch99q/vino/client";
-
 import { h } from "preact";
 import { renderToString } from "preact-render-to-string";
 
@@ -47,7 +45,7 @@ function buildAssets(base: string, metadata: Record<string, any>, assets: string
   };
 }
 
-export function render(base: string, component: Component, metadata: Record<string, any> = {}) {
+export function render(base: string, component: any, metadata: Record<string, any> = {}): string {
   if (!component.entrypoint) return renderToString(h(component, metadata));
   const { meta, links, scripts } = buildAssets(base, metadata, component?.entrypoint?.assets ?? [], component?.entrypoint?.styles ?? []);
 

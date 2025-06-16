@@ -1,5 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { createContext, createElement, use } from "react";
+import type { Context as ReactContext, ReactNode } from "react";
 
 type MetaItem = [string, Record<string, unknown>];
 type LinkItem = [string, Record<string, unknown>];
@@ -12,22 +13,22 @@ export type Context = {
   metadata: Record<string, unknown>,
 }
 
-export const ContextProvider = createContext<Context>({
+export const ContextProvider: ReactContext<Context> = createContext<Context>({
   links: [],
   scripts: [],
   meta: [],
   metadata: {},
 })
 
-export function Meta() {
+export function Meta(): ReactNode[] {
   const { meta } = use(ContextProvider);
   return meta.map(([tag, attributes], i) => createElement(tag, (attributes.key = i, attributes)));
 }
-export function Links() {
+export function Links(): ReactNode[] {
   const { links } = use(ContextProvider);
   return links.map(([tag, attributes], i) => createElement(tag, (attributes.key = i, attributes)));
 }
-export function Scripts() {
+export function Scripts(): ReactNode[] {
   const { scripts } = use(ContextProvider);
   return scripts.map(([tag, attributes], i) => createElement(tag, (attributes.key = i, attributes)));
 }

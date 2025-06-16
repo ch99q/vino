@@ -22,7 +22,7 @@ export default defineConfig({
     }),
     preact(),
     vino({
-      adapter: import.meta.resolve("@ch99q/vino/preact"),
+      adapter: import.meta.resolve("@ch99q/vino-preact"),
     })
   ],
   build: {

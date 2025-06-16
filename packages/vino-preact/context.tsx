@@ -1,5 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { createContext, createElement } from "preact";
+import type { VNode, Context as VContext } from "preact";
 import { useContext } from "preact/hooks";
 
 type MetaItem = [string, Record<string, unknown>];
@@ -13,22 +14,22 @@ export type Context = {
   metadata: Record<string, unknown>,
 }
 
-export const ContextProvider = createContext<Context>({
+export const ContextProvider: VContext<Context> = createContext<Context>({
   links: [],
   scripts: [],
   meta: [],
   metadata: {},
 })
 
-export function Meta() {
+export function Meta(): VNode[] {
   const { meta } = useContext(ContextProvider);
   return meta.map(([tag, attributes], i) => createElement(tag, (attributes.key = i, attributes)));
 }
-export function Links() {
+export function Links(): VNode[] {
   const { links } = useContext(ContextProvider);
   return links.map(([tag, attributes], i) => createElement(tag, (attributes.key = i, attributes)));
 }
-export function Scripts() {
+export function Scripts(): VNode[] {
   const { scripts } = useContext(ContextProvider);
   return scripts.map(([tag, attributes], i) => createElement(tag, (attributes.key = i, attributes)));
 }

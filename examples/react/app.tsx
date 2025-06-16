@@ -1,4 +1,4 @@
-import { Scripts, Meta, Links } from "@ch99q/vino/react";
+import { Scripts, Meta, Links } from "@ch99q/vino-react";
 import { useState } from "react";
 
 import "./style.css";

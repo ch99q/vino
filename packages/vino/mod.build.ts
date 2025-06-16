@@ -1,7 +1,8 @@
+// deno-lint-ignore-file no-explicit-any
 import { resolve } from "node:path";
 import { type ResolvedConfig, type Rollup, build, loadConfigFromFile } from "vite";
 
-import type { Bundle } from "./types.d.ts";
+import type { Bundle } from "./types.ts";
 
 export function createBuilder(rootConfig: ResolvedConfig, adapter: string) {
   const entries = new Set<string>();
@@ -23,8 +24,8 @@ export function createBuilder(rootConfig: ResolvedConfig, adapter: string) {
 
     async build(refs: string[]): Promise<[Bundle, Set<string>]> {
       if (cache) return cache;
-      if (entries.size === 0) return [undefined, new Set()];
-      globalThis.__VINO_BUNDLE__ = true;
+      if (entries.size === 0) return [undefined!, new Set()];
+      (globalThis as any).__VINO_BUNDLE__ = true;
 
       const config = (await loadConfigFromFile({
         command: 'build',
@@ -79,9 +80,9 @@ export function createBuilder(rootConfig: ResolvedConfig, adapter: string) {
 
       console.log("%c", "color: reset")
 
-      const entrypoints: Record<string, {
+      const entrypoints: {
         fileName: string; styles: string[]; assets: string[]
-      }> = {};
+      }[] = [];
       const assets: Record<string, string | Uint8Array> = {};
       for (const chunk of output) {
         assets[chunk.fileName] = chunk.type === 'asset' ? chunk.source : chunk.code;
@@ -111,15 +112,17 @@ export function createBuilder(rootConfig: ResolvedConfig, adapter: string) {
         }
       }
 
-      globalThis.__VINO_BUNDLE__ = false;
+      (globalThis as any).__VINO_BUNDLE__ = false;
 
-      cache = {
-        entrypoints,
-        assets,
-        watchers
-      } as Bundle;
+      cache = [
+        {
+          entrypoints,
+          assets,
+        },
+        watchers,
+      ];
 
-      return [cache, watchers];
+      return cache;
     }
   }
 }

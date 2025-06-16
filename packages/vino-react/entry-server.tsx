@@ -1,6 +1,4 @@
 // deno-lint-ignore-file no-explicit-any
-import type { Component } from "@ch99q/vino/client";
-
 import React from "react";
 import { renderToString } from "react-dom/server.edge";
 
@@ -47,7 +45,7 @@ function buildAssets(base: string, metadata: Record<string, any>, assets: string
   };
 }
 
-export function render(base: string, component: Component, metadata: Record<string, any> = {}) {
+export function render(base: string, component: any, metadata: Record<string, any> = {}): string {
   if(!component.entrypoint) return renderToString(React.createElement(component, metadata));
   const { meta, links, scripts } = buildAssets(base, metadata, component?.entrypoint?.assets ?? [], component?.entrypoint?.styles ?? []);
 
