@@ -1,5 +1,4 @@
-/// <reference types="./context.d.ts" />
-
+/* @ts-self-types="./context.d.ts" */
 import { createContext } from 'preact';
 import { useContext } from 'preact/hooks';
 

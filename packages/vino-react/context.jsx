@@ -1,4 +1,4 @@
-/// <reference types="./context.d.ts" />
+/* @ts-self-types="./context.d.ts" */
 import { createContext, useContext } from 'react';
 
 export const HeadContext = createContext(null);

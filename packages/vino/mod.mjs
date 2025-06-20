@@ -1,6 +1,4 @@
-/// <reference types="./mod.d.ts" />
-
-// @ts-check
+/* @ts-self-types="./mod.d.ts" */
 import { resolve } from "node:path";
 import { readFile } from "node:fs/promises";
 

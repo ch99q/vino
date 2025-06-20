@@ -11,7 +11,7 @@
     "preact/hooks": "npm:preact@^10.26.9/hooks",
     "preact/compat": "npm:preact@^10.26.9/compat",
     "preact-render-to-string": "npm:preact-render-to-string@^6.5.13",
-    "vite": "npm:vite@^6.3.5"
+    "vite": "npm:vite@6.3.5"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

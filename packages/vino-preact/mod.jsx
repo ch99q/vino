@@ -1,4 +1,4 @@
-/// <reference types="./mod.d.ts" />
+/* @ts-self-types="./mod.d.ts" */
 import { vino as vinoBase } from "@ch99q/vino";
 
 export const vino = (config) => vinoBase({

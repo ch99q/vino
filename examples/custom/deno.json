@@ -8,7 +8,7 @@
     "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.4",
     "@hono/vite-dev-server": "npm:@hono/vite-dev-server@^0.19.1",
     "hono": "npm:hono@^4.7.11",
-    "vite": "npm:vite@^6.3.5",
+    "vite": "npm:vite@6.3.5",
     "vite-plugin-inspect": "npm:vite-plugin-inspect@^11.2.0"
   },
   "compilerOptions": {
