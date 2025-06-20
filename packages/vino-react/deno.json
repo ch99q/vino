@@ -21,7 +21,7 @@
     "types": [
       "npm:@types/react@^19.1.6",
       "npm:@types/react-dom@^19.1.6",
-      "npm:vite/client"
+      "vite/client"
     ]
   }
 }

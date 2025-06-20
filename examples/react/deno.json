@@ -11,8 +11,7 @@
     "hono": "npm:hono@^4.7.11",
     "react": "npm:react@^19.1.0",
     "react-dom": "npm:react-dom@^19.1.0",
-    "vite": "npm:vite@^6.3.5",
-    "vite-plugin-inspect": "npm:vite-plugin-inspect@^11.2.0"
+    "vite": "npm:vite@^6.3.5"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

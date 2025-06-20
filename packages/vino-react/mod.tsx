@@ -1,6 +1,7 @@
+import type { Plugin } from "vite";
 import { vino as vinoBase, type Config } from "@ch99q/vino";
 
-export const vino = (config: Omit<Config, "entry">) => vinoBase({
+export const vino: (config: Omit<Config, "entry">) => Plugin = (config: Omit<Config, "entry">) => vinoBase({
   ...config,
   entry: {
     server: import.meta.resolve("./entry-server.tsx"),

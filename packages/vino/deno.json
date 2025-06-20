@@ -5,8 +5,5 @@
   "exports": {
     ".": "./mod.ts",
     "./assets": "./assets.ts"
-  },
-  "imports": {
-    "vite": "npm:vite@^6.3.5"
   }
 }
