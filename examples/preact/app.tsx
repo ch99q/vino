@@ -1,28 +1,24 @@
-import { Scripts, Meta, Links } from "@ch99q/vino-preact";
 import { useState } from "preact/hooks";
+import { Head } from "@ch99q/vino-preact/context";
 
 export default function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <html>
-      <head>
+    <div>
+      <Head>
         <title>Preact App</title>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <h1>Hello, Preact!</h1>
-        <p>This is a simple Preact application.</p>
-        
-        <button type="button" onClick={() => setCount(count + 1)}>
-          Clicked {count} times
-        </button>
+        <meta name="description" content="A simple Preact application." />
+        <link as="style" rel="preload" href="/style.css" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="/style.css" crossOrigin="anonymous" />
+      </Head>
 
-        <Scripts />
-      </body>
-    </html>
+      <h1>Hello, Preact!</h1>
+      <p>This is a simple Preact application.</p>
+
+      <button type="button" onClick={() => setCount(count + 1)}>
+        Clicked {count} times
+      </button>
+    </div>
   );
 }

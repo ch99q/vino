@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-window
-import { h, hydrate } from 'preact';
-import type { ComponentType } from 'preact';
+import { render as hydrate } from 'hono/jsx/dom'
+import type { JSX } from 'hono/jsx/jsx-runtime';
 
 import { HeadContext } from "./context.tsx";
 
@@ -10,14 +10,14 @@ declare global {
   }
 }
 
-export default function render(component: ComponentType<Record<string, unknown>>) {
+export default function render(Component: () => JSX.Element) {
   const metadata = window.__PAGE_META__ || {};
   const root = document.getElementById('root')!;
 
   hydrate(
-    h(HeadContext.Provider, { value: { meta: metadata, head: [] } },
-      h(component, {})
-    ),
+    <HeadContext.Provider value={{ meta: metadata, head: [] }}>
+      <Component />
+    </HeadContext.Provider>,
     root
   )
 }

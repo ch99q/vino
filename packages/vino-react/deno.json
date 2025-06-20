@@ -1,8 +1,11 @@
 {
   "name": "@ch99q/vino-react",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
-  "exports": "./mod.tsx",
+  "exports": {
+    ".": "./mod.tsx",
+    "./context": "./context.tsx"
+  },
   "imports": {
     "react": "npm:react@^19.1.0",
     "react-dom": "npm:react-dom@^19.1.0"
@@ -18,7 +21,7 @@
     "types": [
       "npm:@types/react@^19.1.6",
       "npm:@types/react-dom@^19.1.6",
-      "@ch99q/vino/client"
+      "npm:vite/client"
     ]
   }
 }

@@ -1,12 +1,19 @@
 import { defineConfig } from 'vite';
 
 import preact from '@preact/preset-vite';
-import vino from "@ch99q/vino";
+import vino from "@ch99q/vino-preact";
 
 import deno from "@deno/vite-plugin";
 import hono from "@hono/vite-dev-server";
 
+import inspect from "vite-plugin-inspect";
+
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@ch99q/vino-preact/context": "../../packages/vino-preact/context.tsx"
+    }
+  },
   plugins: [
     deno(),
     hono({
@@ -17,22 +24,38 @@ export default defineConfig({
         /\?t\=\d+$/,
         /^\/node_modules\/.*/,
         /^\/\_\_inspect\/.*/,
-        /^\/\.well-known\//
+        /^\/\.well-known\//,
+        /^\/\.vite\//
       ],
     }),
     preact(),
     vino({
-      adapter: import.meta.resolve("@ch99q/vino-preact"),
-    })
+      base: "/assets/",
+    }),
+    inspect()
   ],
   build: {
-    lib: {
-      entry: "./mod.ts",
-      formats: ['es'],
-      fileName: 'mod',
+    rollupOptions: {
+      input: "./mod.ts",
+      output: {
+        entryFileNames: `[name].mjs`,
+        compact: true,
+        manualChunks(id) {
+          if (id.includes('node_modules'))
+            return "vendor";
+        }
+      },
+      treeshake: "smallest"
     },
-    ssr: true,
-    cssCodeSplit: true, // Prevents CSS from being bundled with the server code.
     target: "deno" + Deno.version.deno,
+    copyPublicDir: false,
+    ssr: true,
   },
+  environments: {
+    client: {
+      build: {
+        ssr: false,
+      }
+    }
+  }
 });

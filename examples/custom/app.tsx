@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Head } from "@ch99q/vino-react/context";
+import { useState } from "hono/jsx";
+import { Head } from "./jsx/context.tsx";
 
 export default function App() {
   const [count, setCount] = useState(0);
@@ -7,14 +7,14 @@ export default function App() {
   return (
     <div>
       <Head>
-        <title>React App</title>
-        <meta name="description" content="A simple React application." />
+        <title>Hono JSX App</title>
+        <meta name="description" content="A simple Hono JSX application." />
         <link as="style" rel="preload" href="/style.css" crossOrigin="anonymous" />
         <link rel="stylesheet" href="/style.css" crossOrigin="anonymous" />
       </Head>
 
-      <h1>Hello, React!</h1>
-      <p>This is a simple React application.</p>
+      <h1>Hello, Hono JSX!</h1>
+      <p>This is a simple Hono JSX application.</p>
 
       <button type="button" onClick={() => setCount(count + 1)}>
         Clicked {count} times

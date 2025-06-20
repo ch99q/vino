@@ -1,63 +1,32 @@
-// deno-lint-ignore-file no-explicit-any
-import React from "react";
-import { renderToString } from "react-dom/server.edge";
+import { renderToString } from 'react-dom/server.edge';
 
-import { ContextProvider } from "./context.tsx";
+import type { ComponentType } from 'react';
+import { createElement } from 'react';
 
-function buildAssets(base: string, metadata: Record<string, any>, assets: string[], styles: string[]) {
-  const meta: [string, Record<string, unknown>][] = [];
-  const links: [string, Record<string, unknown>][] = [];
-  const scripts: [string, Record<string, unknown>][] = [];
+import { Document } from './document.tsx';
+import { HeadContext } from './context.tsx';
 
-  assets.forEach((asset: string) => {
-    const ext = asset.split('.').pop() || '';
-    asset = base + asset;
-    if (["woff", "woff2", "ttf", "otf"].includes(ext)) {
-      links.push(["link", { rel: "preload", href: asset, as: "font", type: `font/${ext}`, crossorigin: "anonymous" }]);
-    } else if (["mjs", "js"].includes(ext)) {
-      links.push(["link", { rel: "modulepreload", href: asset }]);
-    } else {
-      links.push(["link", { rel: "preload", href: asset, as: "fetch" }]);
-    }
-  });
+export default function render({ client }: { client: string }, component: ComponentType<Record<string, unknown>>, metadata: Record<string, unknown>) {
+  const helmet: React.ReactNode[][] = [];
 
-  styles.forEach((style: string) => {
-    style = base + style;
-    links.push(["link", { rel: "stylesheet", href: style }]);
-    links.push(["link", { rel: "preload", href: style, as: "style" }]);
-  });
-
-  scripts.push(["script", {
-    type: "module", dangerouslySetInnerHTML: {
-      __html: `globalThis.__PAGE_CONTEXT__ = ${JSON.stringify({
-        meta: meta ?? [],
-        links: links ?? [],
-        scripts: scripts ?? [],
-        metadata: metadata ?? {}
-      })};`
-    }
-  }]);
-
-  return {
-    meta,
-    links,
-    scripts
-  };
-}
-
-export function render(base: string, component: any, metadata: Record<string, any> = {}): string {
-  if(!component.entrypoint) return renderToString(React.createElement(component, metadata));
-  const { meta, links, scripts } = buildAssets(base, metadata, component?.entrypoint?.assets ?? [], component?.entrypoint?.styles ?? []);
-
-  scripts.push(["script", {
-    type: "module", src: base + component.entrypoint.fileName
-  }]);
-  
-  const Component = component?.module;
-  if(!Component) throw new Error("Component does not have a default export.");
-  return renderToString(
-    <ContextProvider.Provider value={{ meta, links, scripts, metadata }}>
-      <Component {...metadata} />
-    </ContextProvider.Provider>
+  // Render the React component to a string.
+  const document = renderToString(
+    createElement(HeadContext.Provider, { value: { head: helmet, meta: metadata } },
+      createElement(Document, { client },
+        createElement(component)
+      )
+    )
   );
+
+  // Extract the head content from the helmet.
+  const head = renderToString(helmet.flat().reverse());
+
+  // Create the full HTML document by inserting the head into the document.
+  const html = "<!DOCTYPE html>" + document.replace(
+    '</head>',
+    `${head}</head>`
+  );
+
+  // Return the rendered HTML.
+  return html;
 }

@@ -3,6 +3,7 @@ const root = new URL("..", import.meta.url).pathname;
 const examples = [
   "react",
   "preact",
+  "custom",
 ]
 
 type BenchResult = {

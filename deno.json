@@ -3,11 +3,8 @@
     "bench": "cd bench && deno run -A mod.ts"
   },
   "workspace": [
-    "./packages/vino",
-    "./packages/vino-react",
-    "./packages/vino-preact",
-    "./examples/react",
-    "./examples/preact"
+    "./packages/*",
+    "./examples/*"
   ],
   "nodeModulesDir": "auto"
 }

@@ -1,18 +1,13 @@
 import { defineConfig } from 'vite';
 
-import react from '@vitejs/plugin-react';
-import vino from "@ch99q/vino-react";
+import vino from "@ch99q/vino";
 
 import deno from "@deno/vite-plugin";
 import hono from "@hono/vite-dev-server";
+
 import inspect from "vite-plugin-inspect";
 
-export default defineConfig({
-  resolve: {
-    alias: {
-      "@ch99q/vino-react/context": "../../packages/vino-react/context.tsx"
-    }
-  },
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
     deno(),
     hono({
@@ -27,12 +22,21 @@ export default defineConfig({
         /^\/\.vite\//
       ],
     }),
-    react(),
     vino({
       base: "/assets/",
+      entry: {
+        client: "./jsx/entry-client.tsx",
+        server: "./jsx/entry-server.tsx"
+      }
     }),
     inspect()
   ],
+  esbuild: {
+    jsxInject: 'import { jsx } from "hono/jsx";',
+    jsxFactory: 'jsx',
+    jsxFragment: 'Fragment',
+    jsxImportSource: isSsrBuild ? 'hono/jsx' : 'hono/jsx/dom'
+  },
   build: {
     rollupOptions: {
       input: "./mod.ts",
@@ -43,9 +47,9 @@ export default defineConfig({
           if (id.includes('node_modules'))
             return "vendor";
         }
-      },
-      treeshake: "smallest"
+      }
     },
+    minify: false,
     target: "deno" + Deno.version.deno,
     copyPublicDir: false,
     ssr: true,
@@ -57,4 +61,4 @@ export default defineConfig({
       }
     }
   }
-});
+}));

@@ -1,8 +1,8 @@
 {
   "tasks": {
     "dev": "vite",
-    "build": "vite build",
-    "start": "deno serve -A --parallel dist/mod.mjs"
+    "build": "vite build --app",
+    "start": "NODE_ENV=production deno serve -A --parallel dist/mod.mjs"
   },
   "imports": {
     "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.4",
@@ -11,7 +11,8 @@
     "hono": "npm:hono@^4.7.11",
     "vite": "npm:vite@^6.3.5",
     "preact": "npm:preact@^10.26.9",
-    "preact-render-to-string": "npm:preact-render-to-string@^6.5.13"
+    "preact-render-to-string": "npm:preact-render-to-string@^6.5.13",
+    "vite-plugin-inspect": "npm:vite-plugin-inspect@^11.2.0"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
@@ -23,7 +24,8 @@
       "deno.window"
     ],
     "types": [
-      "@ch99q/vino/client"
+      "@ch99q/vino-preact",
+      "vite/client"
     ]
   }
 }

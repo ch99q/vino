@@ -1,14 +1,12 @@
 {
   "name": "@ch99q/vino",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "exports": {
     ".": "./mod.ts",
-    "./hono": "./hono.ts",
-    "./client": "./types.ts"
+    "./assets": "./assets.ts"
   },
   "imports": {
-    "hono": "npm:hono@4.7.11",
     "vite": "npm:vite@^6.3.5"
   }
 }

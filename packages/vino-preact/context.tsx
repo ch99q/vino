@@ -1,40 +1,17 @@
-// deno-lint-ignore-file no-explicit-any
-import { createContext, createElement } from "preact";
-import type { VNode, Context as VContext } from "preact";
-import { useContext } from "preact/hooks";
+import { createContext } from 'preact';
+import { useContext } from 'preact/hooks';
+import type { VNode } from 'preact';
 
-type MetaItem = [string, Record<string, unknown>];
-type LinkItem = [string, Record<string, unknown>];
-type ScriptItem = [string, Record<string, unknown>];
+export const HeadContext = createContext<{ head: VNode[], meta: Record<string, unknown> }>(null!);
 
-export type Context = {
-  meta: Array<MetaItem>,
-  links: Array<LinkItem>,
-  scripts: Array<ScriptItem>,
-  metadata: Record<string, unknown>,
+export function Head(props: { children?: VNode | VNode[] }) {
+  if (!import.meta.env.SSR) return null;
+  const head = useContext(HeadContext);
+  if (head && props.children) head.head.push(...Array.isArray(props.children) ? props.children : [props.children]);
+  return null;
 }
 
-export const ContextProvider: VContext<Context> = createContext<Context>({
-  links: [],
-  scripts: [],
-  meta: [],
-  metadata: {},
-})
-
-export function Meta(): VNode[] {
-  const { meta } = useContext(ContextProvider);
-  return meta.map(([tag, attributes], i) => createElement(tag, (attributes.key = i, attributes)));
-}
-export function Links(): VNode[] {
-  const { links } = useContext(ContextProvider);
-  return links.map(([tag, attributes], i) => createElement(tag, (attributes.key = i, attributes)));
-}
-export function Scripts(): VNode[] {
-  const { scripts } = useContext(ContextProvider);
-  return scripts.map(([tag, attributes], i) => createElement(tag, (attributes.key = i, attributes)));
-}
-
-export function useMetadata<T extends Record<string, any>>(): T {
-  const { metadata } = useContext(ContextProvider);
-  return metadata as T;
+export function useMeta() {
+  const head = useContext(HeadContext);
+  return head?.meta ?? {};
 }

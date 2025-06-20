@@ -1,17 +1,23 @@
 {
-  "timestamp": "2025-06-16T14:22:59.889Z",
+  "timestamp": "2025-06-20T11:40:48.487Z",
   "results": [
     {
       "example": "react",
-      "requests_per_sec": 56671.95,
-      "transfer_per_sec": "50.59MB",
-      "latency": "32.65ms"
+      "requests_per_sec": 51003.28,
+      "transfer_per_sec": "43.14MB",
+      "latency": "33.79ms"
     },
     {
       "example": "preact",
-      "requests_per_sec": 58308.04,
-      "transfer_per_sec": "32.86MB",
-      "latency": "31.34ms"
+      "requests_per_sec": 52538.58,
+      "transfer_per_sec": "43.84MB",
+      "latency": "30.73ms"
+    },
+    {
+      "example": "custom",
+      "requests_per_sec": 51247.32,
+      "transfer_per_sec": "43.16MB",
+      "latency": "36.50ms"
     }
   ]
 }

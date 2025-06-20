@@ -1,6 +1,11 @@
-import { render } from "./entry-server.tsx";
-export { render as client } from "./entry-client.tsx";
+import { vino as vinoBase, type Config } from "@ch99q/vino";
 
-export default render;
+export const vino = (config: Omit<Config, "entry">) => vinoBase({
+  ...config,
+  entry: {
+    server: import.meta.resolve("./entry-server.tsx"),
+    client: import.meta.resolve("./entry-client.tsx"),
+  },
+});
 
-export * from "./context.tsx";
+export default vino;
