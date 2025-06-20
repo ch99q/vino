@@ -5,5 +5,8 @@
   "exports": {
     ".": "./mod.ts",
     "./assets": "./assets.ts"
+  },
+  "imports": {
+    "@ch99q/vino/assets": "./assets.ts"
   }
 }
