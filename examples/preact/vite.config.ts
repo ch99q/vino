@@ -11,7 +11,9 @@ import inspect from "vite-plugin-inspect";
 export default defineConfig({
   resolve: {
     alias: {
-      "@ch99q/vino-preact/context": "../../packages/vino-preact/context.tsx"
+      // We only do this in the example, because of the workspace setup.
+      // Don't do this in your own projects.
+      "@ch99q/vino-preact/context": "../../packages/vino-preact/context.jsx"
     }
   },
   plugins: [
@@ -54,6 +56,13 @@ export default defineConfig({
   environments: {
     client: {
       build: {
+        rollupOptions: {
+          output: {
+            entryFileNames: `[name]-[hash].mjs`,
+            chunkFileNames: `[name]-[hash].mjs`,
+            assetFileNames: `[name]-[hash].[ext]`,
+          }
+        },
         ssr: false,
       }
     }

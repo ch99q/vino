@@ -1,38 +1,11 @@
-// deno-lint-ignore-file no-explicit-any
+/// <reference types="./mod.d.ts" />
+
+// @ts-check
 import { resolve } from "node:path";
 import { readFile } from "node:fs/promises";
-import type { Plugin, ResolvedConfig, ViteDevServer, Rollup } from "vite";
 
 import assets from "@ch99q/vino/assets";
-
 export { assets };
-
-type ViteBuilder = any;
-type BuildEnvironment = any;
-
-/**
- * The configuration for the Vino plugin.
- */
-export interface Config {
-  /**
-   * The base path for the client-side assets.
-   * @default "/"
-   */
-  base?: string;
-  /**
-   * The entry points for the client and server.
-   */
-  entry: {
-    /**
-     * The path to the server-side entry point.
-     */
-    server: string;
-    /**
-     * The path to the client-side entry point.
-     */
-    client: string;
-  }
-}
 
 // This prefix is used to identify client-side modules during development.
 const URL_PREFIX = '/@client';
@@ -42,20 +15,26 @@ const ASSETS_ID = "@ch99q/vino/assets";
 
 /**
  * A Vite plugin for building and serving full-stack applications.
- * @param config The plugin configuration.
- * @returns The Vite plugin.
+ * @param {import('./mod.d.ts').Config} config The plugin configuration.
+ * @returns {import('vite').Plugin} The Vite plugin.
  */
-export function vino(config: Config): Plugin {
+export function vino(config) {
   // In development, we prevent the plugin from being loaded multiple times.
-  if ((globalThis as any).__VINO__) return { name: 'vite-plugin-vino' };
+  // @ts-ignore: globalThis is not typed
+  if (globalThis.__VINO__) return { name: 'vite-plugin-vino' };
 
-  let builder: ViteBuilder;
-  let client: BuildEnvironment;
-  let ssr: BuildEnvironment;
-  let resolvedConfig: ResolvedConfig;
+  /** @type {any} */
+  let builder;
+  /** @type {any} */
+  let client;
+  /** @type {any} */
+  let ssr;
+  /** @type {import('vite').ResolvedConfig} */
+  let resolvedConfig;
 
   // This map stores the client-side entry points for the build.
-  const entries: Map<string, string> = new Map();
+  /** @type {Map<string, string>} */
+  const entries = new Map();
 
   return {
     name: 'vite-plugin-vino',
@@ -65,14 +44,14 @@ export function vino(config: Config): Plugin {
 
     /**
      * This hook is used to configure the plugin based on the command being run.
-     * @param userConfig The user's Vite configuration.
-     * @param env The environment details.
+     * @param {import('vite').UserConfig} userConfig The user's Vite configuration.
+     * @param {import('vite').ConfigEnv} env The environment details.
      */
     config(userConfig, { command }) {
       if (command === 'build') {
         // In build mode, we configure a custom builder to handle the SSR and client builds.
         userConfig.builder = userConfig.builder || {};
-        userConfig.builder.buildApp = async function (vite: ViteBuilder) {
+        userConfig.builder.buildApp = async function (vite) {
           builder = vite;
 
           ssr = vite.environments.ssr;
@@ -86,15 +65,16 @@ export function vino(config: Config): Plugin {
           await vite.build(builder.environments.ssr);
         }
       } else {
-        (globalThis as any).__VINO__ = true;
+        // @ts-ignore: globalThis is not typed
+        (globalThis).__VINO__ = true;
       }
     },
 
     /**
      * This hook is called after the Vite configuration has been resolved.
-     * @param resolved The resolved Vite configuration.
+     * @param {import('vite').ResolvedConfig} resolved The resolved Vite configuration.
      */
-    configResolved(resolved: ResolvedConfig) {
+    configResolved(resolved) {
       resolvedConfig = resolved;
 
       // We resolve the entry points to absolute paths.
@@ -116,11 +96,11 @@ export function vino(config: Config): Plugin {
 
     /**
      * This hook is used to resolve module IDs.
-     * @param id The module ID to resolve.
-     * @param importer The importer module.
-     * @returns The resolved module ID.
+     * @param {string} id The module ID to resolve.
+     * @param {string | undefined} importer The importer module.
+     * @this {import('vite').Rollup.PluginContext}
      */
-    resolveId(id: string, importer: string | undefined) {
+    resolveId(id, importer) {
       if (resolvedConfig.command === 'serve') {
         // In development, we handle client-side modules with a `?client` suffix.
         if (id.endsWith('?client')) return resolve(importer || '', "..", id);
@@ -129,7 +109,8 @@ export function vino(config: Config): Plugin {
           return id;
         }
         // We also handle imports from client-side modules.
-        if ((this as any).environment.name === 'client' && importer?.startsWith(URL_PREFIX) && !id.startsWith(URL_PREFIX) && (id.startsWith("/") || id.startsWith("."))) {
+        // @ts-ignore: this.environment is not typed
+        if (this.environment.name === 'client' && importer?.startsWith(URL_PREFIX) && !id.startsWith(URL_PREFIX) && (id.startsWith("/") || id.startsWith("."))) {
           return URL_PREFIX + resolve(resolvedConfig.root, importer.slice(URL_PREFIX.length), "..", id);
         }
       } else {
@@ -146,10 +127,11 @@ export function vino(config: Config): Plugin {
 
     /**
      * This hook is used for handling hot module replacement updates.
-     * @param context The HMR context.
+     * @param {{ file: string; server: import('vite').ViteDevServer }} context The HMR context.
      */
-    hotUpdate({ file, server }: { file: string; server: ViteDevServer }) {
-      if (resolvedConfig.command !== 'serve' || (this as any).environment.name !== 'client') return;
+    hotUpdate({ file, server }) {
+      // @ts-ignore
+      if (resolvedConfig.command !== 'serve' || this.environment.name !== 'client') return;
       // In development, we reload client-side modules when they are updated.
       const modules = server.moduleGraph.getModulesByFile(URL_PREFIX + file);
       if (modules) {
@@ -161,10 +143,10 @@ export function vino(config: Config): Plugin {
 
     /**
      * This hook is used to load module content.
-     * @param id The module ID.
-     * @returns The module content.
+     * @param {string} id The module ID.
+     * @this {import('vite').Rollup.PluginContext}
      */
-    async load(id: string) {
+    async load(id) {
       if (id.endsWith('?client')) {
         const isServe = resolvedConfig.command === 'serve';
 
@@ -174,7 +156,8 @@ export function vino(config: Config): Plugin {
 
         const absPath = id.slice(0, -'?client'.length);
 
-        if ((this as any).environment.name === 'client') {
+        // @ts-ignore: this.environment is not typed
+        if (this.environment.name === 'client') {
           const modulePath = isServe ? `${URL_PREFIX}${absPath}` : absPath;
           const renderPath = isServe ? `${URL_PREFIX}${config.entry.client}` : config.entry.client;
           return `import module from '${modulePath}'; import render from '${renderPath}'; (async function() { return render(module); })();`;
@@ -194,7 +177,8 @@ export function vino(config: Config): Plugin {
       } else {
         // In build mode, we handle a virtual module for assets.
         if (id === "\0virtual:vino-assets") {
-          if ((this as any).environment.name !== 'ssr') return;
+          // @ts-ignore: this.environment is not typed
+          if (this.environment.name !== 'ssr') return;
 
           if (entries.size === 0) {
             return;
@@ -208,10 +192,12 @@ export function vino(config: Config): Plugin {
           client.config.build.assetsInlineLimit = 0;
           client.config.build.rollupOptions.input = Array.from(entries.keys());
 
-          const mapping: Map<string, string | Uint8Array> = new Map();
+          /** @type {Map<string, string | Uint8Array>} */
+          const mapping = new Map();
 
           // We build the client and create a mapping of the assets.
-          const client_bundle: Rollup.RollupOutput = await builder.build(client);
+          /** @type {import('vite').Rollup.RollupOutput} */
+          const client_bundle = await builder.build(client);
           for (const chunk of client_bundle.output) {
             if (chunk.type === 'chunk') {
               mapping.set(chunk.fileName, chunk.code);
@@ -230,11 +216,14 @@ export function vino(config: Config): Plugin {
 
     /**
      * This hook is used to transform module code.
-     * @param code The module code.
-     * @returns The transformed code.
+     * @param {string} code The module code.
+     * @param {string} id The module id
+     * @this {import('vite').Rollup.PluginContext}
+     * @returns {import('vite').Rollup.TransformResult} The transformed code.
      */
-    transform(code: string) {
-      if (resolvedConfig.command === 'serve' && (this as any).environment.name === 'client') {
+    transform(code, id) {
+      // @ts-ignore
+      if (resolvedConfig.command === 'serve' && this.environment.name === 'client') {
         // In development, we remove CSS imports from client-side modules to avoid issues with HMR.
         const cssImportRegex = /import\s+['"]([^'"]+\.css)['"]/g;
         return code.replace(cssImportRegex, "");
@@ -243,12 +232,16 @@ export function vino(config: Config): Plugin {
 
     /**
      * This hook is called when the bundle is being generated.
-     * @param bundle The bundle being generated.
+     * @param {import('vite').Rollup.OutputOptions} _options
+     * @param {import('vite').Rollup.OutputBundle} bundle The bundle being generated.
      */
-    generateBundle(_options: any, bundle: Rollup.OutputBundle) {
+    generateBundle(_options, bundle) {
       if (resolvedConfig.command !== 'build') return;
 
-      const replace = (source: string) => {
+      /**
+       * @param {string} source
+       */
+      const replace = (source) => {
         // Replace all entry points with the corresponding filename in the mapping.
         for (const [key, value] of entries) {
           source = source.replaceAll(key, value);
@@ -259,7 +252,7 @@ export function vino(config: Config): Plugin {
       for (const entry in bundle) {
         const chunk = bundle[entry];
         if (chunk.type === 'chunk') chunk.code = replace(chunk.code);
-        else if (typeof chunk.source === 'string') (chunk as Rollup.OutputAsset).source = replace(chunk.source);
+        else if (typeof chunk.source === 'string') chunk.source = replace(chunk.source);
       }
     }
   };

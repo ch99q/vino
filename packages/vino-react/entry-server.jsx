@@ -1,13 +1,12 @@
 import { renderToString } from 'react-dom/server.edge';
 
-import type { ComponentType } from 'react';
 import { createElement } from 'react';
 
-import { Document } from './document.tsx';
-import { HeadContext } from './context.tsx';
+import { Document } from './document.jsx';
+import { HeadContext } from './context.jsx';
 
-export default function render({ client }: { client: string }, component: ComponentType<Record<string, unknown>>, metadata: Record<string, unknown>) {
-  const helmet: React.ReactNode[][] = [];
+export default function render({ client }, component, metadata) {
+  const helmet = [];
 
   // Render the React component to a string.
   const document = renderToString(

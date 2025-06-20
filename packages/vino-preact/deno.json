@@ -1,10 +1,10 @@
 {
   "name": "@ch99q/vino-preact",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "exports": {
-    ".": "./mod.tsx",
-    "./context": "./context.tsx"
+    ".": "./mod.jsx",
+    "./context": "./context.jsx"
   },
   "imports": {
     "preact": "npm:preact@^10.26.9",

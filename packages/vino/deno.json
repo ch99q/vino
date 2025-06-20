@@ -1,12 +1,12 @@
 {
   "name": "@ch99q/vino",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "exports": {
-    ".": "./mod.ts",
-    "./assets": "./assets.ts"
+    ".": "./mod.mjs",
+    "./assets": "./assets.mjs"
   },
   "imports": {
-    "@ch99q/vino/assets": "./assets.ts"
+    "@ch99q/vino/assets": "./assets.mjs"
   }
 }

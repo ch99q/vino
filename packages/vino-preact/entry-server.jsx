@@ -1,13 +1,11 @@
 import { renderToString } from 'preact-render-to-string';
-
-import type { ComponentType, VNode } from 'preact';
 import { Fragment, h } from 'preact';
 
-import { Document } from './document.tsx';
-import { HeadContext } from './context.tsx';
+import { Document } from './document.jsx';
+import { HeadContext } from './context.jsx';
 
-export default function render({ client }: { client: string }, component: ComponentType<Record<string, unknown>>, metadata: Record<string, unknown>) {
-  const helmet: VNode[] = [];
+export default function render({ client }, component, metadata) {
+  const helmet = [];
 
   // Render the React component to a string.
   const document = renderToString(

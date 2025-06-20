@@ -1,17 +1,18 @@
+/// <reference types="./context.d.ts" />
+
 import { createContext } from 'preact';
 import { useContext } from 'preact/hooks';
-import type { VNode, Context } from 'preact';
 
-export const HeadContext: Context<{ head: VNode[], meta: Record<string, unknown> }> = createContext<{ head: VNode[], meta: Record<string, unknown> }>(null!);
+export const HeadContext = createContext(null);
 
-export function Head(props: { children?: VNode | VNode[] }): void {
+export function Head(props) {
   if (!import.meta.env.SSR) return;
   const head = useContext(HeadContext);
   if (head && props.children) head.head.push(...Array.isArray(props.children) ? props.children : [props.children]);
   return;
 }
 
-export function useMeta(): Record<string, unknown> {
+export function useMeta() {
   const head = useContext(HeadContext);
   return head?.meta ?? {};
 }

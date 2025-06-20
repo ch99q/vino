@@ -57,6 +57,13 @@ export default defineConfig(({ isSsrBuild }) => ({
   environments: {
     client: {
       build: {
+        rollupOptions: {
+          output: {
+            entryFileNames: `[name]-[hash].mjs`,
+            chunkFileNames: `[name]-[hash].mjs`,
+            assetFileNames: `[name]-[hash].[ext]`,
+          }
+        },
         ssr: false,
       }
     }
