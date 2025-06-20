@@ -6,9 +6,5 @@
     "./packages/*",
     "./examples/*"
   ],
-  "imports": {
-    "vite": "npm:vite@^6.3.5",
-    "vite-plugin-inspect": "npm:vite-plugin-inspect@^11.2.0"
-  },
   "nodeModulesDir": "auto"
 }

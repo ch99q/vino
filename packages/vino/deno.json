@@ -7,6 +7,6 @@
     "./assets": "./assets.mjs"
   },
   "imports": {
-    "@ch99q/vino/assets": "./assets.mjs"
+    "vite": "npm:vite@^6.3.5"
   }
 }

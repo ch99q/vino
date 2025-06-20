@@ -4,6 +4,8 @@
 import { resolve } from "node:path";
 import { readFile } from "node:fs/promises";
 
+// DO NOT CHANGE THIS IMPORT.
+// It is used to export the assets object to the client.
 import assets from "@ch99q/vino/assets";
 export { assets };
 
