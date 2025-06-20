@@ -1,7 +1,6 @@
 import type { Plugin } from "vite";
-import type { Assets } from "./assets.d.ts";
 
-declare const assets: Assets;
+declare const assets: Record<string, string | Uint8Array>;
 export { assets };
 
 /**
