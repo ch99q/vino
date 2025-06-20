@@ -13,8 +13,7 @@ const CURRENT_FILE = new URL(import.meta.url).pathname;
 
 /**
  * A Vite plugin for building and serving full-stack applications.
- * @param {import('./mod.d.ts').Config} config The plugin configuration.
- * @returns {import('vite').Plugin} The Vite plugin.
+ * @implements {import('./mod.d.ts').vino}
  */
 export function vino(config) {
   // In development, we prevent the plugin from being loaded multiple times.
@@ -27,7 +26,7 @@ export function vino(config) {
   let client;
   /** @type {any} */
   let ssr;
-  /** @type {import('vite').ResolvedConfig} */
+  /** @type {any} */
   let resolvedConfig;
 
   // This map stores the client-side entry points for the build.
@@ -40,11 +39,6 @@ export function vino(config) {
 
     sharedDuringBuild: true,
 
-    /**
-     * This hook is used to configure the plugin based on the command being run.
-     * @param {import('vite').UserConfig} userConfig The user's Vite configuration.
-     * @param {import('vite').ConfigEnv} env The environment details.
-     */
     config(userConfig, { command }) {
       if (command === 'build') {
         // In build mode, we configure a custom builder to handle the SSR and client builds.
@@ -68,10 +62,6 @@ export function vino(config) {
       }
     },
 
-    /**
-     * This hook is called after the Vite configuration has been resolved.
-     * @param {import('vite').ResolvedConfig} resolved The resolved Vite configuration.
-     */
     configResolved(resolved) {
       resolvedConfig = resolved;
 
@@ -92,12 +82,6 @@ export function vino(config) {
       }
     },
 
-    /**
-     * This hook is used to resolve module IDs.
-     * @param {string} id The module ID to resolve.
-     * @param {string | undefined} importer The importer module.
-     * @this {import('vite').Rollup.PluginContext}
-     */
     resolveId(id, importer) {
       if (resolvedConfig.command === 'serve') {
         // In development, we handle client-side modules with a `?client` suffix.
@@ -123,10 +107,6 @@ export function vino(config) {
       }
     },
 
-    /**
-     * This hook is used for handling hot module replacement updates.
-     * @param {{ file: string; server: import('vite').ViteDevServer }} context The HMR context.
-     */
     hotUpdate({ file, server }) {
       // @ts-ignore: this.environment is not typed
       if (resolvedConfig.command !== 'serve' || this.environment.name !== 'client') return;
@@ -139,11 +119,6 @@ export function vino(config) {
       }
     },
 
-    /**
-     * This hook is used to load module content.
-     * @param {string} id The module ID.
-     * @this {import('vite').Rollup.PluginContext}
-     */
     async load(id) {
       if (id.endsWith('?client')) {
         const isServe = resolvedConfig.command === 'serve';
@@ -194,7 +169,7 @@ export function vino(config) {
           const mapping = new Map();
 
           // We build the client and create a mapping of the assets.
-          /** @type {import('vite').Rollup.RollupOutput} */
+          /** @type {any} */
           const client_bundle = await builder.build(client);
           for (const chunk of client_bundle.output) {
             if (chunk.type === 'chunk') {
@@ -212,12 +187,6 @@ export function vino(config) {
       }
     },
 
-    /**
-     * This hook is used to transform module code.
-     * @param {string} code The module code.
-     * @this {import('vite').Rollup.PluginContext}
-     * @returns {import('vite').Rollup.TransformResult} The transformed code.
-     */
     transform(code) {
       // @ts-ignore: this.environment is not typed
       if (resolvedConfig.command === 'serve' && this.environment.name === 'client') {
@@ -227,18 +196,10 @@ export function vino(config) {
       }
     },
 
-    /**
-     * This hook is called when the bundle is being generated.
-     * @param {import('vite').Rollup.OutputOptions} _options
-     * @param {import('vite').Rollup.OutputBundle} bundle The bundle being generated.
-     */
     generateBundle(_options, bundle) {
       if (resolvedConfig.command !== 'build') return;
 
-      /**
-       * @param {string} source
-       */
-      const replace = (source) => {
+      const replace = (/** @type {string} */ source) => {
         // Replace all entry points with the corresponding filename in the mapping.
         for (const [key, value] of entries) {
           source = source.replaceAll(key, value);
