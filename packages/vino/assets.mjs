@@ -1,5 +1,3 @@
-/**
- * @type {Record<string, string | Uint8Array>}
- */
+/// <reference types="./assets.d.ts" />
 const assets = {};
 export default assets;

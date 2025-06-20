@@ -51,18 +51,18 @@ export function vino(config) {
       if (command === 'build') {
         // In build mode, we configure a custom builder to handle the SSR and client builds.
         userConfig.builder = userConfig.builder || {};
-        userConfig.builder.buildApp = async function (vite) {
-          builder = vite;
+        userConfig.builder.buildApp = async function (viteInstance) {
+          builder = viteInstance;
 
-          ssr = vite.environments.ssr;
-          client = vite.environments.client;
+          ssr = viteInstance.environments.ssr;
+          client = viteInstance.environments.client;
           // We need to ensure that both the client and SSR environments are configured correctly.
           if (!ssr || !client) throw new Error("Failed to create build environments for client or ssr. Make sure the environments are properly configured and run the build with ssr enabled.");
           if (client.config.build.ssr === true) throw new Error("Client build environment should not have SSR enabled. Please check your configuration.");
           if (client.config.build.lib !== false) throw new Error("Client build environment should not have library mode enabled. Please check your configuration.");
 
           // We build the SSR environment first.
-          await vite.build(builder.environments.ssr);
+          await builder.build(builder.environments.ssr);
         }
       } else {
         // @ts-ignore: globalThis is not typed
@@ -130,7 +130,7 @@ export function vino(config) {
      * @param {{ file: string; server: import('vite').ViteDevServer }} context The HMR context.
      */
     hotUpdate({ file, server }) {
-      // @ts-ignore
+      // @ts-ignore: this.environment is not typed
       if (resolvedConfig.command !== 'serve' || this.environment.name !== 'client') return;
       // In development, we reload client-side modules when they are updated.
       const modules = server.moduleGraph.getModulesByFile(URL_PREFIX + file);
@@ -217,12 +217,11 @@ export function vino(config) {
     /**
      * This hook is used to transform module code.
      * @param {string} code The module code.
-     * @param {string} id The module id
      * @this {import('vite').Rollup.PluginContext}
      * @returns {import('vite').Rollup.TransformResult} The transformed code.
      */
-    transform(code, id) {
-      // @ts-ignore
+    transform(code) {
+      // @ts-ignore: this.environment is not typed
       if (resolvedConfig.command === 'serve' && this.environment.name === 'client') {
         // In development, we remove CSS imports from client-side modules to avoid issues with HMR.
         const cssImportRegex = /import\s+['"]([^'"]+\.css)['"]/g;
