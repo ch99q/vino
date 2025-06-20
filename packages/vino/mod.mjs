@@ -6,14 +6,12 @@ import { readFile } from "node:fs/promises";
 
 // DO NOT CHANGE THIS IMPORT.
 // It is used to export the assets object to the client.
-import assets from "@ch99q/vino/assets";
+import assets from "./assets.mjs";
 export { assets };
 
 // This prefix is used to identify client-side modules during development.
 const URL_PREFIX = '/@client';
-
-// This is the ID of the virtual module for assets.
-const ASSETS_ID = "@ch99q/vino/assets";
+const CURRENT_FILE = new URL(import.meta.url).pathname;
 
 /**
  * A Vite plugin for building and serving full-stack applications.
@@ -123,7 +121,7 @@ export function vino(config) {
           return absPath;
         }
         // We also handle a virtual module for assets.
-        if (id === ASSETS_ID) return "\0virtual:vino-assets";
+        if (id === "./assets.mjs" && importer?.includes(CURRENT_FILE)) return "\0virtual:vino-assets";
       }
     },
 

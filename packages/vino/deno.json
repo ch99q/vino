@@ -3,11 +3,9 @@
   "version": "0.0.3",
   "license": "MIT",
   "exports": {
-    ".": "./mod.mjs",
-    "./assets": "./assets.mjs"
+    ".": "./mod.mjs"
   },
   "imports": {
-    "@ch99q/vino/assets": "file:./assets.mjs",
     "vite": "npm:vite@^6.3.5"
   }
 }
