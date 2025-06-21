@@ -1,6 +1,6 @@
 import { useMeta } from "./context";
 
-export function Document({ client, children }) {
+export function Document({ client, children }: { client: string, children: React.ReactNode }) {
   const meta = useMeta();
 
   return (

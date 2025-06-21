@@ -1,15 +1,12 @@
 import { defineConfig } from 'vite';
 
 import vino from "@ch99q/vino";
-
-import deno from "@deno/vite-plugin";
 import hono from "@hono/vite-dev-server";
 
 import inspect from "vite-plugin-inspect";
 
 export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
-    deno(),
     hono({
       entry: "./mod.ts",
       // Allow serving static files from hono.
@@ -50,7 +47,7 @@ export default defineConfig(({ isSsrBuild }) => ({
       }
     },
     minify: false,
-    target: "deno" + Deno.version.deno,
+    target: "esnext",
     copyPublicDir: false,
     ssr: true,
   },

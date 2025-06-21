@@ -1,6 +1,7 @@
 import { useMeta } from "./context";
+import type { VNode } from "preact";
 
-export function Document({ client, children }) {
+export function Document({ client, children }: { client: string, children: VNode | VNode[] }) {
   const meta = useMeta();
 
   return (

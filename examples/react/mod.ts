@@ -4,7 +4,7 @@ import { mimes } from "hono/utils/mime";
 // Important ?client suffix to ensure the client-side code is loaded correctly.
 import app from "./app.tsx?client";
 
-import { assets } from "@ch99q/vino";
+import assets from "@ch99q/vino/assets";
 
 import styles from "./style.css?inline";
 

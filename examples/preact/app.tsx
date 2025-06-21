@@ -1,5 +1,5 @@
 import { useState } from "preact/hooks";
-import { Head } from "@ch99q/vino-preact/context";
+import { Head } from "./jsx/context";
 
 export default function App() {
   const [count, setCount] = useState(0);

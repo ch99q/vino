@@ -1,16 +1,17 @@
 import { renderToString } from 'react-dom/server.edge';
+import { ComponentType } from 'react';
 
 import { Document } from './document';
-import { HeadContext } from './context.mjs';
+import { HeadContext } from './context';
 
-export default function render({ client }, component, metadata) {
-  const helmet = [];
+export default function render({ client }: { client: string }, Component: ComponentType<any>, metadata: Record<string, unknown>) {
+  const helmet: React.ReactNode[] = [];
 
   // Render the React component to a string.
   const document = renderToString(
     <HeadContext.Provider value={{ head: helmet, meta: metadata }}>
       <Document client={client}>
-        {component}
+        <Component />
       </Document>
     </HeadContext.Provider>
   );

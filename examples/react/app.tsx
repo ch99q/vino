@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Head } from "@ch99q/vino-react/context";
+import { Head } from "./jsx/context";
 
 export default function App() {
   const [count, setCount] = useState(0);

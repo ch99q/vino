@@ -1,13 +1,14 @@
 {
   "name": "react-example",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build --app",
     "start": "NODE_ENV=production deno serve -A --parallel dist/mod.mjs"
   },
   "dependencies": {
-    "@deno/vite-plugin": "^1.0.4",
+    "@ch99q/vino": "workspace:*",
     "@hono/vite-dev-server": "^0.19.1",
     "@vitejs/plugin-react": "^4.5.2",
     "hono": "^4.7.11",

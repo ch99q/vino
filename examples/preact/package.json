@@ -1,13 +1,14 @@
 {
   "name": "preact-example",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build --app",
     "start": "NODE_ENV=production deno serve -A --parallel dist/mod.mjs"
   },
   "dependencies": {
-    "@deno/vite-plugin": "^1.0.4",
+    "@ch99q/vino": "workspace:*",
     "@hono/vite-dev-server": "^0.19.1",
     "@preact/preset-vite": "^2.10.1",
     "hono": "^4.7.11",

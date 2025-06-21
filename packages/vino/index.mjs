@@ -24,6 +24,8 @@ export function vino(config) {
   let ssr;
   /** @type {any} */
   let resolvedConfig;
+  /** @type {any} */
+  let resolver;
 
   // This map stores the client-side entry points for the build.
   /** @type {Map<string, string>} */
@@ -48,6 +50,8 @@ export function vino(config) {
           if (!ssr || !client) throw new Error("Failed to create build environments for client or ssr. Make sure the environments are properly configured and run the build with ssr enabled.");
           if (client.config.build.ssr === true) throw new Error("Client build environment should not have SSR enabled. Please check your configuration.");
           if (client.config.build.lib !== false) throw new Error("Client build environment should not have library mode enabled. Please check your configuration.");
+
+          resolver = viteInstance.config.createResolver();
 
           // We build the SSR environment first.
           await builder.build(builder.environments.ssr);
@@ -89,7 +93,8 @@ export function vino(config) {
         // We also handle imports from client-side modules.
         // @ts-ignore: this.environment is not typed
         if (this.environment.name === 'client' && importer?.startsWith(URL_PREFIX) && !id.startsWith(URL_PREFIX) && (id.startsWith("/") || id.startsWith("."))) {
-          return URL_PREFIX + resolve(resolvedConfig.root, importer.slice(URL_PREFIX.length), "..", id);
+          const resolved = await this.resolve(id, importer.slice(URL_PREFIX.length), { skipSelf: true });
+          return URL_PREFIX + resolved.id;
         }
       } else {
         // In build mode, we also handle client-side modules.
@@ -99,7 +104,7 @@ export function vino(config) {
           return absPath;
         }
         // We also handle a virtual module for assets.
-        if(await resolver(id,importer) === ASSETS_FILE) return "\0virtual:vino-assets";
+        if (await resolver(id, importer) === ASSETS_FILE) return "\0virtual:vino-assets";
       }
     },
 
@@ -140,7 +145,6 @@ export function vino(config) {
         // In development, we load client-side modules from the file system.
         if (id.startsWith(URL_PREFIX)) {
           const url = new URL("file://" + id.slice(URL_PREFIX.length));
-          if (!url.pathname.split("/").pop()?.includes(".")) url.pathname += ".js";
           return await readFile(url.pathname, 'utf-8')
         }
       } else {

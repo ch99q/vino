@@ -1,19 +1,19 @@
 import { renderToString } from 'preact-render-to-string';
-import { Fragment, h } from 'preact';
+import { ComponentType, Fragment, h, type VNode } from 'preact';
 
 import { Document } from './document';
-import { HeadContext } from './context.mjs';
+import { HeadContext } from './context';
 
-export default function render({ client }, component, metadata) {
-  const helmet = [];
+export default function render({ client }: { client: string }, Component: ComponentType<any>, metadata: Record<string, unknown>) {
+  const helmet: VNode[] = [];
 
   // Render the React component to a string.
   const document = renderToString(
-    h(HeadContext.Provider, { value: { head: helmet, meta: metadata } },
-      h(Document, { client },
-        h(component, {})
-      )
-    )
+    <HeadContext.Provider value={{ head: helmet, meta: metadata }}>
+      <Document client={client}>
+        <Component />
+      </Document>
+    </HeadContext.Provider>
   );
 
   // Extract the head content from the helmet.

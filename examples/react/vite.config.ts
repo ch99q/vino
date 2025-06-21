@@ -1,22 +1,13 @@
 import { defineConfig } from 'vite';
 
 import react from '@vitejs/plugin-react';
-import vino from "@ch99q/vino-react";
+import vino from "@ch99q/vino";
 
-import deno from "@deno/vite-plugin";
 import hono from "@hono/vite-dev-server";
 import inspect from "vite-plugin-inspect";
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      // We only do this in the example, because of the workspace setup.
-      // Don't do this in your own projects.
-      "@ch99q/vino-react/context": "../../packages/vino-react/context.jsx"
-    }
-  },
   plugins: [
-    deno(),
     hono({
       entry: "./mod.ts",
       // Allow serving static files from hono.
@@ -32,6 +23,10 @@ export default defineConfig({
     react(),
     vino({
       base: "/assets/",
+      entry: {
+        server: "./jsx/entry-server.tsx",
+        client: "./jsx/entry-client.tsx"
+      }
     }),
     inspect()
   ],
@@ -48,7 +43,7 @@ export default defineConfig({
       },
       treeshake: "smallest"
     },
-    target: "deno" + Deno.version.deno,
+    target: "esnext",
     copyPublicDir: false,
     ssr: true,
   },
