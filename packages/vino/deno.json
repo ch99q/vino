@@ -1,9 +1,0 @@
-{
-  "name": "@ch99q/vino",
-  "version": "0.0.3",
-  "license": "MIT",
-  "exports": "./mod.mjs",
-  "imports": {
-    "vite": "npm:vite@^6.3.5"
-  }
-}

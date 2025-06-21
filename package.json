@@ -1,0 +1,12 @@
+{
+  "name": "root",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "bench": "cd bench && deno run -A mod.ts"
+  },
+  "workspaces": [
+    "./packages/*",
+    "./examples/*"
+  ]
+} 

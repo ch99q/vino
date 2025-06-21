@@ -1,4 +1,4 @@
-import { useMeta } from "./context.jsx";
+import { useMeta } from "./context";
 
 export function Document({ client, children }) {
   const meta = useMeta();

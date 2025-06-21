@@ -1,20 +1,18 @@
 import { renderToString } from 'react-dom/server.edge';
 
-import { createElement } from 'react';
-
-import { Document } from './document.jsx';
-import { HeadContext } from './context.jsx';
+import { Document } from './document';
+import { HeadContext } from './context.mjs';
 
 export default function render({ client }, component, metadata) {
   const helmet = [];
 
   // Render the React component to a string.
   const document = renderToString(
-    createElement(HeadContext.Provider, { value: { head: helmet, meta: metadata } },
-      createElement(Document, { client },
-        createElement(component)
-      )
-    )
+    <HeadContext.Provider value={{ head: helmet, meta: metadata }}>
+      <Document client={client}>
+        {component}
+      </Document>
+    </HeadContext.Provider>
   );
 
   // Extract the head content from the helmet.

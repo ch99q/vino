@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-window
 import { h, hydrate } from 'preact';
-import { HeadContext } from "./context.jsx";
+import { HeadContext } from "./context.mjs";
 
 export default function render(component) {
   const metadata = window.__PAGE_META__ || {};

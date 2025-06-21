@@ -1,8 +1,8 @@
 import { renderToString } from 'preact-render-to-string';
 import { Fragment, h } from 'preact';
 
-import { Document } from './document.jsx';
-import { HeadContext } from './context.jsx';
+import { Document } from './document';
+import { HeadContext } from './context.mjs';
 
 export default function render({ client }, component, metadata) {
   const helmet = [];

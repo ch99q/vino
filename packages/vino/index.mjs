@@ -2,14 +2,10 @@
 import { resolve } from "node:path";
 import { readFile } from "node:fs/promises";
 
-// DO NOT CHANGE THIS IMPORT.
-// It is used to export the assets object to the client.
-import assets from "./assets.mjs";
-export { assets };
-
 // This prefix is used to identify client-side modules during development.
 const URL_PREFIX = '/@client';
 const CURRENT_FILE = new URL(import.meta.url).pathname;
+const ASSETS_FILE = resolve(CURRENT_FILE, "..", "assets.mjs");
 
 /**
  * A Vite plugin for building and serving full-stack applications.
@@ -82,7 +78,7 @@ export function vino(config) {
       }
     },
 
-    resolveId(id, importer) {
+    async resolveId(id, importer) {
       if (resolvedConfig.command === 'serve') {
         // In development, we handle client-side modules with a `?client` suffix.
         if (id.endsWith('?client')) return resolve(importer || '', "..", id);
@@ -103,7 +99,7 @@ export function vino(config) {
           return absPath;
         }
         // We also handle a virtual module for assets.
-        if (id === "./assets.mjs" && importer?.includes(CURRENT_FILE)) return "\0virtual:vino-assets";
+        if(await resolver(id,importer) === ASSETS_FILE) return "\0virtual:vino-assets";
       }
     },
 

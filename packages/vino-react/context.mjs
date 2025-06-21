@@ -4,7 +4,6 @@ import { createContext, useContext } from 'react';
 export const HeadContext = createContext(null);
 
 export function Head(props) {
-  if (!import.meta.env.SSR) return null;
   const head = useContext(HeadContext);
   if (head && props.children) head.head.push(...Array.isArray(props.children) ? props.children : [props.children]);
   return null;
