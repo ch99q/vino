@@ -1,5 +1,5 @@
 /* @ts-self-types="./index.d.ts" */
-import { resolve } from "node:path";
+import { resolve, basename } from "node:path";
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 
@@ -53,6 +53,10 @@ export function vino(config) {
           if (client.config.build.lib !== false) throw new Error("Client build environment should not have library mode enabled. Please check your configuration.");
 
           resolver = viteInstance.config.createResolver();
+
+          if(config?.base?.startsWith('/')) config.base = config.base.slice(1);
+          ssr.config.build.assetsDir = config?.base ?? "";
+          ssr.config.build.assetsInlineLimit = 0;
 
           // We build the SSR environment first.
           await builder.build(builder.environments.ssr);
@@ -186,6 +190,9 @@ export function vino(config) {
             else mapping.set(chunk.fileName, chunk.source);
           }
 
+          // We inject a placeholder for the server assets.
+          mapping.set("<server-assets>", "");
+
           // We return the assets as a JSON object.
           return `export default ${JSON.stringify(Object.fromEntries(mapping))};`;
         }
@@ -195,11 +202,20 @@ export function vino(config) {
     generateBundle(_options, bundle) {
       if (resolvedConfig.command !== 'build') return;
 
+      // Inject the assets from the server into the client.
+      const assets = {};
+      for (const entry in bundle) {
+        const chunk = bundle[entry];
+        if (chunk.type === 'asset') assets[basename(chunk.fileName)] = chunk.source;
+      }
+      
       const replace = (/** @type {string} */ source) => {
         // Replace all entry points with the corresponding filename in the mapping.
         for (const [key, value] of entries) {
           source = source.replaceAll(key, value);
         }
+        // Inject the assets into the client.
+        source = source.replaceAll("\"<server-assets>\":\"\"", JSON.stringify(assets).slice(1, -1));
         return source;
       }
 
