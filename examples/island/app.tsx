@@ -2,8 +2,6 @@ import { useState } from "react";
 
 import { Head } from "./jsx/context";
 
-import styles from "./style.css?url";
-
 import Counter from "./counter?island";
 
 export default function App() {
@@ -14,8 +12,6 @@ export default function App() {
       <Head>
         <title>React App</title>
         <meta name="description" content="A simple React application." />
-        <link as="style" rel="preload" href={styles} crossOrigin="anonymous" />
-        <link rel="stylesheet" href={styles} crossOrigin="anonymous" />
       </Head>
 
       <h1>Hello, React!</h1>

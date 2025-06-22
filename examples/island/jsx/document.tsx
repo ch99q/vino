@@ -1,5 +1,7 @@
 import { useMeta } from "./context";
 
+import styles from "../style.css?url";
+
 export function Document({ client, children }: { client: string, children: React.ReactNode }) {
   const meta = useMeta();
 
@@ -8,6 +10,8 @@ export function Document({ client, children }: { client: string, children: React
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link as="style" rel="preload" href={styles} crossOrigin="anonymous" />
+        <link rel="stylesheet" href={styles} crossOrigin="anonymous" />
       </head>
       <body>
         <div id="root">
