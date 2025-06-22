@@ -17,7 +17,7 @@ export default function render({ client }: { client: string }, Component: Compon
   );
 
   // Extract the head content from the helmet.
-  const head = renderToString(helmet.flat().reverse());
+  const head = renderToString(helmet);
 
   // Create the full HTML document by inserting the head into the document.
   const html = "<!DOCTYPE html>" + document.replace(

@@ -2,8 +2,8 @@ import { Hono } from 'hono';
 import { mimes } from "hono/utils/mime";
 
 import assets from "@ch99q/vino-island/assets";
-import app from "./app?client";
 
+import app from "./app?client";
 
 const web = new Hono();
 
@@ -22,8 +22,6 @@ web.use("*", async (c, next) => {
 
 // @ts-ignore:
 web.get('/', (c) => c.html(app({})));
-
-// web.get('/style.css', (c) => c.body(styles, 200, { "Content-Type": "text/css" }));
 
 web.use('/assets/*', async (c, next) => {
   const url = new URL(c.req.url);

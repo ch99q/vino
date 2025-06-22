@@ -6,8 +6,6 @@ import app from "./app.tsx?client";
 
 import assets from "@ch99q/vino/assets";
 
-import styles from "./style.css?inline";
-
 const web = new Hono();
 
 web.use("*", async (c, next) => {
@@ -25,8 +23,6 @@ web.use("*", async (c, next) => {
 
 // @ts-ignore:
 web.get('/', (c) => c.html(app({}, c)));
-
-web.get('/style.css', (c) => c.body(styles, 200, { "Content-Type": "text/css" }));
 
 web.use('/assets/*', async (c, next) => {
   const url = new URL(c.req.url);

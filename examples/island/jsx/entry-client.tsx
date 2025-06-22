@@ -12,6 +12,6 @@ export async function island(path: string, module: () => JSX.Element) {
 }
 
 export default function render(component: () => void) {
-  // Trigger the application to bundle.
-  component();
+  // Return the component to be bundled.
+  return component;
 }

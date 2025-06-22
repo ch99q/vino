@@ -1,6 +1,7 @@
 /* @ts-self-types="./index.d.ts" */
 import { resolve } from "node:path";
 import { readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 
 // This prefix is used to identify client-side modules during development.
 const URL_PREFIX = '/@client';
@@ -84,17 +85,18 @@ export function vino(config) {
 
     async resolveId(id, importer) {
       if (resolvedConfig.command === 'serve') {
-        // In development, we handle client-side modules with a `?client` suffix.
-        if (id.endsWith('?client')) return resolve(importer || '', "..", id);
+        const realImporter = importer?.startsWith(URL_PREFIX) ? importer.slice(URL_PREFIX.length) : importer;
         if (id.startsWith(URL_PREFIX)) {
-          if (id.endsWith('.css?direct')) return id.slice(URL_PREFIX.length);
-          return id;
+          const resolved = await this.resolve(id.slice(URL_PREFIX.length), realImporter, { skipSelf: true });
+          if (resolved) return URL_PREFIX + resolved.id;
         }
-        // We also handle imports from client-side modules.
-        // @ts-ignore: this.environment is not typed
-        if (this.environment.name === 'client' && importer?.startsWith(URL_PREFIX) && !id.startsWith(URL_PREFIX) && (id.startsWith("/") || id.startsWith("."))) {
+        if (id.endsWith('?url')) {
+          const resolved = await this.resolve(id.slice(0, -'?url'.length), realImporter, { skipSelf: true });
+          if (resolved) return URL_PREFIX + resolved.id + '?url';
+        }
+        if (this.environment.name === 'client' && importer?.startsWith(URL_PREFIX) && (id.startsWith("/") || id.startsWith("."))) {
           const resolved = await this.resolve(id, importer.slice(URL_PREFIX.length), { skipSelf: true });
-          return URL_PREFIX + resolved.id;
+          if (resolved) return URL_PREFIX + resolved.id;
         }
       } else {
         // In build mode, we also handle client-side modules.
@@ -142,10 +144,12 @@ export function vino(config) {
       }
 
       if (resolvedConfig.command === 'serve') {
-        // In development, we load client-side modules from the file system.
         if (id.startsWith(URL_PREFIX)) {
-          const url = new URL("file://" + id.slice(URL_PREFIX.length));
-          return await readFile(url.pathname, 'utf-8')
+          const resolved = await this.resolve(id.slice(URL_PREFIX.length), undefined, { skipSelf: true });
+          if (!resolved) return;
+          if (id.endsWith("?url")) return `import "${resolved.id.slice(0, -'?url'.length)}"; export default ${JSON.stringify(resolved.id.slice(0, -'?url'.length) + '?direct')}`;
+          if (!existsSync(resolved.id)) return await this.environment.fetchModule(resolved.id);
+          return await readFile(resolved.id, 'utf-8');
         }
       } else {
         // In build mode, we handle a virtual module for assets.
@@ -184,15 +188,6 @@ export function vino(config) {
           // We return the assets as a JSON object.
           return `export default ${JSON.stringify(Object.fromEntries(mapping))};`;
         }
-      }
-    },
-
-    transform(code) {
-      // @ts-ignore: this.environment is not typed
-      if (resolvedConfig.command === 'serve' && this.environment.name === 'client') {
-        // In development, we remove CSS imports from client-side modules to avoid issues with HMR.
-        const cssImportRegex = /import\s+['"]([^'"]+\.css)['"]/g;
-        return code.replace(cssImportRegex, "");
       }
     },
 
