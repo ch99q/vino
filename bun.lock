@@ -13,6 +13,23 @@
         "vite-plugin-inspect": "^11.2.0",
       },
     },
+    "examples/island": {
+      "name": "island-example",
+      "dependencies": {
+        "@ch99q/vino-island": "workspace:*",
+        "@hono/vite-dev-server": "^0.19.1",
+        "@vitejs/plugin-react": "^4.5.2",
+        "hono": "^4.7.11",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "vite": "6.3.5",
+        "vite-plugin-inspect": "^11.2.0",
+      },
+      "devDependencies": {
+        "@types/react": "^19.1.0",
+        "@types/react-dom": "^19.1.0",
+      },
+    },
     "examples/preact": {
       "name": "preact-example",
       "dependencies": {
@@ -46,6 +63,13 @@
     "packages/vino": {
       "name": "@ch99q/vino",
       "version": "0.0.13",
+      "dependencies": {
+        "vite": "^6.3.5",
+      },
+    },
+    "packages/vino-island": {
+      "name": "@ch99q/vino-island",
+      "version": "0.0.1",
       "dependencies": {
         "vite": "^6.3.5",
       },
@@ -99,6 +123,8 @@
     "@babel/types": ["@babel/types@7.27.6", "", { "dependencies": { "@babel/helper-string-parser": "^7.27.1", "@babel/helper-validator-identifier": "^7.27.1" } }, "sha512-ETyHEk2VHHvl9b9jZP5IHPavHYk57EhanlRRuae9XCpb/j5bDCbPPMOBfCWhnl/7EDJz0jEMCi/RhccCE8r1+Q=="],
 
     "@ch99q/vino": ["@ch99q/vino@workspace:packages/vino"],
+
+    "@ch99q/vino-island": ["@ch99q/vino-island@workspace:packages/vino-island"],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.25.5", "", { "os": "aix", "cpu": "ppc64" }, "sha512-9o3TMmpmftaCMepOdA5k/yDw8SfInyzWWTjYTFCX3kPSDJMROQTb8jg+h9Cnwnmm1vOzvxN7gIfB5V2ewpjtGA=="],
 
@@ -309,6 +335,8 @@
     "is-inside-container": ["is-inside-container@1.0.0", "", { "dependencies": { "is-docker": "^3.0.0" }, "bin": { "is-inside-container": "cli.js" } }, "sha512-KIYLCCJghfHZxqjYBE7rEy0OBuTd5xCHS7tHVgvCLkx7StIoaxwNW3hCALgEUjFfeRk+MG/Qxmp/vtETEF3tRA=="],
 
     "is-wsl": ["is-wsl@3.1.0", "", { "dependencies": { "is-inside-container": "^1.0.0" } }, "sha512-UcVfVfaK4Sc4m7X3dUSoHoozQGBEFeDC+zVo06t98xe8CzHSZZBekNXH+tu0NalHolcJ/QAGqS46Hef7QXBIMw=="],
+
+    "island-example": ["island-example@workspace:examples/island"],
 
     "js-tokens": ["js-tokens@4.0.0", "", {}, "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="],
 
