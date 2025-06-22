@@ -85,7 +85,14 @@ export function vino(config) {
     async resolveId(id, importer) {
       if (resolvedConfig.command === 'serve') {
         // In development, we handle client-side modules with a `?client` suffix.
-        if (id.endsWith('?client')) return resolve(importer || '', "..", id);
+        if (!id.startsWith(URL_PREFIX) && id.endsWith('?client')) {
+          const resolved = await this.resolve(id.slice(0, -'?client'.length), importer, { skipSelf: true });
+          return resolved.id + '?client';
+        }
+        if (config.island && !id.startsWith(URL_PREFIX) && id.endsWith('?island')) {
+          const resolved = await this.resolve(id.slice(0, -'?island'.length), importer.replace(URL_PREFIX, ''), { skipSelf: true });
+          return URL_PREFIX + resolved.id + '?island';
+        }
         if (id.startsWith(URL_PREFIX)) {
           if (id.endsWith('.css?direct')) return id.slice(URL_PREFIX.length);
           return id;
@@ -99,6 +106,11 @@ export function vino(config) {
       } else {
         // In build mode, we also handle client-side modules.
         if (id.endsWith('?client')) {
+          const absPath = resolve(importer || '', "..", id);
+          entries.set(absPath, "");
+          return absPath;
+        }
+        if (config.island && id.endsWith('?island')) {
           const absPath = resolve(importer || '', "..", id);
           entries.set(absPath, "");
           return absPath;
@@ -121,7 +133,7 @@ export function vino(config) {
     },
 
     async load(id) {
-      if (id.endsWith('?client')) {
+      if (id.endsWith('?client') || (config.island && id.endsWith('?island'))) {
         const isServe = resolvedConfig.command === 'serve';
 
         if (isServe && id.startsWith(URL_PREFIX)) {
@@ -130,14 +142,26 @@ export function vino(config) {
 
         const absPath = id.slice(0, -'?client'.length);
 
-        // @ts-ignore: this.environment is not typed
-        if (this.environment.name === 'client') {
-          const modulePath = isServe ? `${URL_PREFIX}${absPath}` : absPath;
-          const renderPath = isServe ? `${URL_PREFIX}${config.entry.client}` : config.entry.client;
-          return `import module from '${modulePath}'; import render from '${renderPath}'; (async function() { return render(module); })();`;
-        } else {
-          const script = (isServe ? URL_PREFIX : (config.base ?? "")) + absPath + '?client';
-          return `import module from '${absPath}'; import render from '${config.entry.server}'; export default function(...args) { return render.apply(null, [{ client: ${JSON.stringify(script)} }, module].concat(args)); }`;
+        if (id.endsWith('?client')) {
+          // @ts-ignore: this.environment is not typed
+          if (this.environment.name === 'client') {
+            const modulePath = isServe ? `${URL_PREFIX}${absPath}` : absPath;
+            const renderPath = isServe ? `${URL_PREFIX}${config.entry.client}` : config.entry.client;
+            return `import module from '${modulePath}'; import render from '${renderPath}'; (async function() { return render(module); })();`;
+          } else {
+            const script = (isServe ? URL_PREFIX : (config.base ?? "")) + absPath + '?client';
+            return `import module from '${absPath}'; import render from '${config.entry.server}'; export default function(...args) { return render.apply(null, [{ client: ${JSON.stringify(script)} }, module].concat(args)); }`;
+          }
+        }
+        if (config.island) {
+          if (this.environment.name === 'client') {
+            const renderPath = isServe ? `${URL_PREFIX}${config.entry.client}` : config.entry.client;
+            const script = (isServe ? URL_PREFIX : (config.base ?? "")) + absPath + '?island';
+            return `export * from "${absPath}"; import { default as module } from "${absPath}"; export default module; import { island } from '${renderPath}'; (async () => { await island(${JSON.stringify(script)}, module); })();`;
+          } else {
+            const script = (isServe ? URL_PREFIX : (config.base ?? "")) + absPath + '?island';
+            return `import module from '${absPath}'; import { island } from '${config.entry.server}'; export default function(...args) { return island("${script}", module, ...args); }`;
+          }
         }
       }
 

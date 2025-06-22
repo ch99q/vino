@@ -1,0 +1,24 @@
+{
+  "name": "@ch99q/vino-island",
+  "version": "0.0.1",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": true,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs"
+    },
+    "./assets": {
+      "types": "./assets.d.ts",
+      "import": "./assets.mjs"
+    }
+  },
+  "dependencies": {
+    "vite": "^6.3.5"
+  }
+} 
