@@ -1,6 +1,6 @@
 {
   "name": "@ch99q/vino-island",
-  "version": "0.0.1",
+  "version": "0.0.14",
   "license": "MIT",
   "type": "module",
   "sideEffects": true,
