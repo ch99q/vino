@@ -87,6 +87,7 @@ export function vino(config) {
       if (resolvedConfig.command === 'serve') {
         const realImporter = importer?.startsWith(URL_PREFIX) ? importer.slice(URL_PREFIX.length) : importer;
         if (id.startsWith(URL_PREFIX)) {
+          if(importer?.endsWith('?url')) return id.slice(URL_PREFIX.length);
           const resolved = await this.resolve(id.slice(URL_PREFIX.length), realImporter, { skipSelf: true });
           if (resolved) return URL_PREFIX + resolved.id;
         }
