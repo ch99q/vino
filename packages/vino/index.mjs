@@ -125,6 +125,21 @@ export function vino(config) {
           server.reloadModule(mod);
         }
       }
+      
+      // In development, we reload server-side modules when they are updated.
+      const direct_modules = server.moduleGraph.getModulesByFile(file);
+      if (direct_modules) {
+        for (const mod of direct_modules) {
+          for (const dep of mod.importers) {
+            const modules = server.moduleGraph.getModulesByFile(URL_PREFIX + dep.file);
+            if (modules) {
+              for (const mod of modules) {
+                server.moduleGraph.invalidateModule(mod);
+              }
+            }
+          }
+        }
+      }
     },
 
     async load(id) {
@@ -152,7 +167,12 @@ export function vino(config) {
         if (id.startsWith(URL_PREFIX)) {
           const resolved = await this.resolve(id.slice(URL_PREFIX.length), undefined, { skipSelf: true });
           if (!resolved) return;
-          if (id.endsWith("?url")) return `import "${resolved.id.slice(0, -'?url'.length)}"; export default ${JSON.stringify(resolved.id.slice(0, -'?url'.length) + '?direct')}`;
+          if (id.endsWith("?url")) {
+            const url = resolved.id.slice(URL_PREFIX.length, -'?url'.length);
+            const hot = `import { createHotContext as __vite__createHotContext } from "/@vite/client";`;
+            const fetched = await this.environment.fetchModule(url, url);
+            return fetched.code.replace(hot, "") + `\nexport default ${JSON.stringify(resolved.id.slice(0, -'?url'.length) + '?direct')}`;
+          }
           if (!existsSync(resolved.id)) return await this.environment.fetchModule(resolved.id);
           return await readFile(resolved.id, 'utf-8');
         }

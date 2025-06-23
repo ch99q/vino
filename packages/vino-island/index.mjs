@@ -54,7 +54,7 @@ export function vino(config) {
 
           resolver = viteInstance.config.createResolver();
 
-          if(config?.base?.startsWith('/')) config.base = config.base.slice(1);
+          if (config?.base?.startsWith('/')) config.base = config.base.slice(1);
           ssr.config.build.assetsDir = config?.base ?? "";
           ssr.config.build.assetsInlineLimit = 0;
 
@@ -91,7 +91,7 @@ export function vino(config) {
       if (resolvedConfig.command === 'serve') {
         const realImporter = importer?.startsWith(URL_PREFIX) ? importer.slice(URL_PREFIX.length) : importer;
         if (id.startsWith(URL_PREFIX)) {
-          if(importer?.endsWith('?url')) return id.slice(URL_PREFIX.length);
+          if (importer?.endsWith('?url')) return id.slice(URL_PREFIX.length);
           const resolved = await this.resolve(id.slice(URL_PREFIX.length), realImporter, { skipSelf: true });
           if (resolved) return URL_PREFIX + resolved.id;
         }
@@ -128,6 +128,21 @@ export function vino(config) {
       if (modules) {
         for (const mod of modules) {
           server.reloadModule(mod);
+        }
+      }
+
+      // In development, we reload server-side modules when they are updated.
+      const direct_modules = server.moduleGraph.getModulesByFile(file);
+      if (direct_modules) {
+        for (const mod of direct_modules) {
+          for (const dep of mod.importers) {
+            const modules = server.moduleGraph.getModulesByFile(URL_PREFIX + dep.file);
+            if (modules) {
+              for (const mod of modules) {
+                server.moduleGraph.invalidateModule(mod);
+              }
+            }
+          }
         }
       }
     },
@@ -169,7 +184,12 @@ export function vino(config) {
         if (id.startsWith(URL_PREFIX)) {
           const resolved = await this.resolve(id.slice(URL_PREFIX.length), undefined, { skipSelf: true });
           if (!resolved) return;
-          if (id.endsWith("?url")) return `import "${resolved.id.slice(0, -'?url'.length)}"; export default ${JSON.stringify(resolved.id.slice(0, -'?url'.length) + '?direct')}`;
+          if (id.endsWith("?url")) {
+            const url = resolved.id.slice(URL_PREFIX.length, -'?url'.length);
+            const hot = `import { createHotContext as __vite__createHotContext } from "/@vite/client";`;
+            const fetched = await this.environment.fetchModule(url, url);
+            return fetched.code.replace(hot, "") + `\nexport default ${JSON.stringify(resolved.id.slice(0, -'?url'.length) + '?direct')}`;
+          }
           if (!existsSync(resolved.id)) return await this.environment.fetchModule(resolved.id);
           return await readFile(resolved.id, 'utf-8');
         }
@@ -225,7 +245,7 @@ export function vino(config) {
         const chunk = bundle[entry];
         if (chunk.type === 'asset') assets[basename(chunk.fileName)] = chunk.source;
       }
-      
+
       const replace = (/** @type {string} */ source) => {
         // Replace all entry points with the corresponding filename in the mapping.
         for (const [key, value] of entries) {
