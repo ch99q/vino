@@ -6,6 +6,8 @@ import vino from "@ch99q/vino-island";
 import hono from "@hono/vite-dev-server";
 import inspect from "vite-plugin-inspect";
 
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineConfig({
   plugins: [
     hono({
@@ -29,6 +31,7 @@ export default defineConfig({
         server: "./jsx/entry-server.tsx"
       }
     }),
+    tailwindcss(),
     inspect()
   ],
   build: {
