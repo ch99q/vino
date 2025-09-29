@@ -159,7 +159,7 @@ export function vino(config) {
           return `import module from '${modulePath}'; import render from '${renderPath}'; (async function() { return render(module); })();`;
         } else {
           const script = (isServe ? URL_PREFIX : (config.base ?? "")) + absPath + '?client';
-          return `import module from '${absPath}'; import render from '${config.entry.server}'; export default function(...args) { return render.apply(null, [{ client: ${JSON.stringify(script)} }, module].concat(args)); }`;
+          return `import * as exports from '${absPath}'; import render from '${config.entry.server}'; export default function(...args) { return render.apply(null, [{ client: ${JSON.stringify(script)}, exports }, exports.default].concat(args)); }`;
         }
       }
 

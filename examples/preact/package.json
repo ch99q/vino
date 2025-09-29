@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "@ch99q/vino": "workspace:*",
-    "@hono/vite-dev-server": "^0.19.1",
-    "@preact/preset-vite": "^2.10.1",
-    "hono": "^4.7.11",
-    "preact": "^10.26.9",
-    "preact-render-to-string": "^6.5.13",
-    "vite": "6.3.5",
-    "vite-plugin-inspect": "^11.2.0"
+    "@hono/vite-dev-server": "^0.21.1",
+    "@preact/preset-vite": "^2.10.2",
+    "hono": "^4.9.9",
+    "preact": "^10.27.2",
+    "preact-render-to-string": "^6.6.1",
+    "vite": "7.1.7",
+    "vite-plugin-inspect": "^11.3.3"
   }
 } 

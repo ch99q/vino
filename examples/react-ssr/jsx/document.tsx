@@ -1,7 +1,5 @@
-import { useMeta } from "./context";
-
-export function Document({ client, children }: { client: string, children: React.ReactNode }) {
-  const meta = useMeta();
+export function Document({ children }: { children: React.ReactNode }) {
+  if (!import.meta.env.SSR) return children;
 
   return (
     <html lang="en">
@@ -23,10 +21,6 @@ export function Document({ client, children }: { client: string, children: React
           `}
           </script>
         )}
-        <script type="module" dangerouslySetInnerHTML={{
-          __html: `window.__PAGE_META__ = ${JSON.stringify(meta)};`
-        }} />
-        <script type="module" src={client}></script>
       </body>
     </html>
   );

@@ -1,14 +1,15 @@
 import { Hono } from 'hono';
 import { mimes } from "hono/utils/mime";
 
-// Important ?client suffix to ensure the client-side code is loaded correctly.
-import app from "./app.tsx?client";
-
 import assets from "@ch99q/vino/assets";
+import api from './api';
 
-import styles from "./style.css?inline";
+import { timing } from 'hono/timing'
 
-const web = new Hono();
+const web = new Hono()
+  .use("*", timing());
+
+web.route('api', api);
 
 web.use("*", async (c, next) => {
   await next();
@@ -23,10 +24,14 @@ web.use("*", async (c, next) => {
   }
 });
 
-// @ts-ignore:
-web.get('/', (c) => c.html(app({}, c)));
+import index from "./pages/index.tsx?client";
+web.get('/', (c) => c.html(index({lol: true}, c)));
 
-web.get('/style.css', (c) => c.body(styles, 200, { "Content-Type": "text/css" }));
+import about from "./pages/about.tsx?client";
+web.get('/about', (c) => c.html(about({}, c)));
+
+import notFound from "./pages/404.tsx?client";
+web.get('*', (c) => c.html(notFound({}, c), 404));
 
 web.use('/assets/*', async (c, next) => {
   const url = new URL(c.req.url);

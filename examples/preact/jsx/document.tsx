@@ -14,11 +14,9 @@ export function Document({ client, children }: { client: string, children: VNode
         <div id="root">
           {children}
         </div>
-        <script type="module">
-          {`
+        <script type="module" dangerouslySetInnerHTML={{ __html: `
           window.__PAGE_META__ = ${JSON.stringify(meta)};
-          `}
-        </script>
+        ` }}></script>
         <script type="module" src={client}></script>
       </body>
     </html>
