@@ -1,9 +1,11 @@
 const root = new URL("..", import.meta.url).pathname;
 
 const examples = [
+  "baseline",
+  "island",
+  "preact", 
   "react",
-  "preact",
-  "custom",
+  "react-ssr",
 ]
 
 type BenchResult = {
@@ -11,13 +13,17 @@ type BenchResult = {
   requests_per_sec?: number;
   transfer_per_sec?: string;
   latency?: string;
+  ratio?: number;
 };
 
 async function buildExample(example: string) {
-  console.log(`Building example: ${example} at ${root}examples/${example}`);
+  const isBaseline = example === "baseline";
+  const projectPath = isBaseline ? root + "bench/" + example : root + "examples/" + example;
+  console.log(`Building example: ${example} at ${projectPath}`);
+  
   const command = new Deno.Command("deno", {
     args: ["task", "build"],
-    cwd: root + "examples/" + example,
+    cwd: projectPath,
     stdout: "piped",
     stderr: "piped",
     env: {
@@ -32,12 +38,17 @@ async function buildExample(example: string) {
   console.log(new TextDecoder().decode(stderr));
 }
 
+let baselineResults: BenchResult | null = null;
+
 async function benchExample(example: string): Promise<BenchResult> {
   console.log(`\n=== Benchmarking ${example} ===`);
+  const isBaseline = example === "baseline";
+  const projectPath = isBaseline ? root + "bench/" + example : root + "examples/" + example;
+  
   // Start the example server
   const command = new Deno.Command("deno", {
     args: ["task", "start"],
-    cwd: root + `examples/${example}`,
+    cwd: projectPath,
     stdout: "piped",
     stderr: "piped",
     env: {
@@ -68,9 +79,39 @@ async function benchExample(example: string): Promise<BenchResult> {
   // Kill the server process
   try {
     child.kill("SIGTERM");
-  } catch (e) {
-    console.warn("Failed to kill server process", e);
+    // Wait a moment for graceful shutdown
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  } catch (_e) {
+    console.log("Failed to gracefully shut down, forcing kill");
   }
+  
+  // Force kill anything still running on port 8000
+  try {
+    const killPort = new Deno.Command("lsof", {
+      args: ["-ti:8000"],
+      stdout: "piped",
+      stderr: "piped"
+    });
+    const { stdout } = await killPort.output();
+    const pids = new TextDecoder().decode(stdout).trim().split('\n').filter(p => p);
+    
+    for (const pid of pids) {
+      if (pid) {
+        console.log(`Force killing process ${pid} on port 8000`);
+        const kill = new Deno.Command("kill", {
+          args: ["-9", pid],
+          stdout: "piped",
+          stderr: "piped"
+        });
+        await kill.output();
+      }
+    }
+  } catch (_e) {
+    // No processes found on port 8000, which is fine
+  }
+  
+  // Wait a bit more to ensure port is free
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
   // Parse wrk output
   const result: BenchResult = { example };
@@ -80,6 +121,14 @@ async function benchExample(example: string): Promise<BenchResult> {
   if (reqSec) result.requests_per_sec = parseFloat(reqSec[1]);
   if (transferSec) result.transfer_per_sec = transferSec[1];
   if (latency) result.latency = latency[1];
+
+  if (isBaseline) {
+    baselineResults = result;
+  } else if (baselineResults && result.requests_per_sec && baselineResults.requests_per_sec) {
+    const ratio = result.requests_per_sec / baselineResults.requests_per_sec;
+    result.ratio = ratio;
+  }
+
   return result;
 }
 

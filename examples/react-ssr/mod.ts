@@ -24,14 +24,11 @@ web.use("*", async (c, next) => {
   }
 });
 
-import index from "./pages/index.tsx?client";
-web.get('/', (c) => c.html(index({lol: true}, c)));
+import index from "./app/index.tsx?client";
+web.get('/', (c) => c.html(index({}, c)));
 
-import about from "./pages/about.tsx?client";
-web.get('/about', (c) => c.html(about({}, c)));
-
-import notFound from "./pages/404.tsx?client";
-web.get('*', (c) => c.html(notFound({}, c), 404));
+import notFound from "./app/404.tsx?client";
+web.notFound((c) => c.html(notFound({}, c), 404));
 
 web.use('/assets/*', async (c, next) => {
   const url = new URL(c.req.url);

@@ -1,23 +1,39 @@
 {
-  "timestamp": "2025-06-20T11:40:48.487Z",
+  "timestamp": "2025-09-30T17:41:54.029Z",
   "results": [
     {
-      "example": "react",
-      "requests_per_sec": 51003.28,
-      "transfer_per_sec": "43.14MB",
-      "latency": "33.79ms"
+      "example": "baseline",
+      "requests_per_sec": 362.35,
+      "transfer_per_sec": "3.79MB",
+      "latency": "241.42ms"
+    },
+    {
+      "example": "island",
+      "requests_per_sec": 86663.35,
+      "transfer_per_sec": "105.79MB",
+      "latency": "22.77ms",
+      "ratio": 239.17027735614738
     },
     {
       "example": "preact",
-      "requests_per_sec": 52538.58,
-      "transfer_per_sec": "43.84MB",
-      "latency": "30.73ms"
+      "requests_per_sec": 95179.28,
+      "transfer_per_sec": "82.87MB",
+      "latency": "24.11ms",
+      "ratio": 262.67222298882297
     },
     {
-      "example": "custom",
-      "requests_per_sec": 51247.32,
-      "transfer_per_sec": "43.16MB",
-      "latency": "36.50ms"
+      "example": "react",
+      "requests_per_sec": 127966.93,
+      "transfer_per_sec": "110.45MB",
+      "latency": "17.42ms",
+      "ratio": 353.15835518145434
+    },
+    {
+      "example": "react-ssr",
+      "requests_per_sec": 42297.52,
+      "transfer_per_sec": "250.22MB",
+      "latency": "56.81ms",
+      "ratio": 116.73111632399612
     }
   ]
 }

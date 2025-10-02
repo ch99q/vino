@@ -20,7 +20,13 @@ export default defineConfig({
         /^\/\.vite\//
       ],
     }),
-    react(),
+    react({
+      babel: {
+        plugins: [
+          ["babel-plugin-react-compiler", { target: "19" }],
+        ],
+      },
+    }),
     vino({
       base: "/assets/",
       entry: {

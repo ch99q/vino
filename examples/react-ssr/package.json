@@ -1,5 +1,5 @@
 {
-  "name": "react-example",
+  "name": "react-ssr-example",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,14 +11,16 @@
     "@ch99q/vino": "workspace:*",
     "@hono/vite-dev-server": "^0.21.1",
     "@vitejs/plugin-react": "^5.0.4",
+    "babel-plugin-react-compiler": "^19.1.0-rc.3",
     "hono": "^4.9.9",
     "react": "^19.1.1",
+    "react-compiler-runtime": "^19.1.0-rc.3",
     "react-dom": "^19.1.1",
     "vite": "7.1.7",
     "vite-plugin-inspect": "^11.3.3"
   },
   "devDependencies": {
-    "@types/react": "^19.1.15",
+    "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9"
   }
-} 
+}
